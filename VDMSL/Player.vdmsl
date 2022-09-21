@@ -1,0 +1,70 @@
+module Player
+imports from GLOBAL values N_SHIPS renamed N_SHIPS
+                           N_ROWS renamed N_ROWS
+                           N_COLS renamed N_COLS
+                    types GuessResult renamed GuessResult
+                          Coordinates renamed Coordinates
+                          GuessHistory renamed GuessHistory
+                    functions nat2str renamed nat2str,
+        from Grid all,
+        from ArrangingStrategy types Type
+                              operations Arrange renamed Arrange,
+        from GuessingStrategy types Type
+                              operations Guess renamed Guess,
+        from IO operations println renamed println
+exports all
+
+definitions
+types
+ID = token;
+S ::
+    name: seq of char
+    points: nat
+    ownGrid: Grid`ID
+    guessHist: GuessHistory
+    arngStrat: ArrangingStrategy`Type
+    guesStrat: GuessingStrategy`Type
+    inv p == p.points <= N_SHIPS;
+InstanceMap = map ID to S;
+
+state PlayerST of
+    Player_m : InstanceMap
+    init s == s = mk_PlayerST({|->})
+  end
+
+operations
+Player: seq of char * ArrangingStrategy`Type * GuessingStrategy`Type ==> ID
+Player(n, arranger, guesser) == let id = mk_token("player"^nat2str(card dom Player_m)) in
+    (
+        Player_m(id) := mk_S(n, 0, Grid`Grid(N_ROWS, N_COLS), mk_GuessHistory([],[]), arranger, guesser);
+        return id
+    );
+
+ArrangeShips: ID ==> ()
+ArrangeShips(id) == Player_m(id).ownGrid := Arrange(Player_m(id).arngStrat, Player_m(id).ownGrid);
+
+TakeTurn: ID * ID ==> ()
+TakeTurn(selfID, oppID) == (
+    let c = Guess(Player_m(selfID).guesStrat, Player_m(selfID).guessHist) in
+        let gr = ReceiveGuess(oppID, c) in
+        (    
+            Player_m(selfID).guessHist.Coords := [c] ^ Player_m(selfID).guessHist.Coords;
+            Player_m(selfID).guessHist.Results := [gr] ^ Player_m(selfID).guessHist.Results;
+            if gr.Sunk then Player_m(selfID).points := Player_m(selfID).points + 1;
+        )
+);
+ReceiveGuess: ID * Coordinates ==> GuessResult
+ReceiveGuess(id, coords) == Grid`Hit(Player_m(id).ownGrid, coords);
+
+GetState: ID ==> S
+GetState(id) == return Player_m(id);
+
+run: () ==> ()
+run() == (
+  dcl p: token := Player("John", <DummyArranger>, <DefaultGuesser>);
+  dcl g: token := Player_m(p).ownGrid;
+  println(Grid`GetState(g).ships);
+  ArrangeShips(p);
+  println(Grid`GetState(g).ships);
+)
+end Player

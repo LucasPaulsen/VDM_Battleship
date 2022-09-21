@@ -1,0 +1,57 @@
+module Grid
+imports from GLOBAL types GuessResult renamed GuessResult
+                          Coordinates renamed Coordinates
+                    values N_ROWS renamed N_ROWS
+                           N_COLS renamed N_COLS
+                    functions nat2str renamed nat2str,
+        from Ship all,
+        from IO operations println renamed println
+exports all
+definitions
+
+types
+ID = token;
+S ::
+    nRows: nat
+    nCols: nat
+    ships: set of Ship`ID;
+    --inv s == forall s1, s2 in set s.ships & s1 <> s2 => dom Ship`GetState(s1).hitCoords inter dom Ship`GetState(s2).hitCoords = {};
+InstanceMap = map ID to S;
+
+state GridST of
+    Grid_m : InstanceMap
+    init s == s = mk_GridST({|->})
+  end
+
+operations
+Grid: nat * nat ==> ID
+Grid(rows, cols) == let id = mk_token("grid"^nat2str(card dom Grid_m)) in
+  (
+    Grid_m(id) := mk_S(rows, cols, {});
+    return id
+  );
+
+PlaceShip: ID * Ship`ID ==> bool
+PlaceShip(id, ship) == if forall s in set (Grid_m(id).ships) & dom Ship`GetState(s).hitCoords inter dom Ship`GetState(ship).hitCoords = {} and
+                   forall c in set dom Ship`GetState(ship).hitCoords & c.X <= Grid_m(id).nCols and c.Y <= Grid_m(id).nRows
+                   then (Grid_m(id).ships := Grid_m(id).ships union {ship};
+                         return true)
+                   else return false;
+
+Hit: ID * Coordinates ==> GuessResult
+Hit(id, coords) == if exists s in set Grid_m(id).ships & coords in set dom Ship`GetState(s).hitCoords
+               then let s in set Grid_m(id).ships be st coords in set dom Ship`GetState(s).hitCoords in
+                    return Ship`Hit(s, coords)
+               else return mk_GuessResult(false, false);
+
+GetState : ID ==> S
+GetState(id)  == return Grid_m(id);
+
+run: () ==> ()
+run() == (
+  dcl g: token := Grid(N_ROWS, N_COLS);
+  if PlaceShip(g, Ship`Ship(mk_Coordinates(1,1), mk_Coordinates(1,3))) then 
+  println(Grid_m);
+)
+
+end Grid

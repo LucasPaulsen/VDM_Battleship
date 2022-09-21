@@ -1,0 +1,61 @@
+class GameController is subclass of GLOBAL
+
+instance variables
+    public scoreLine : map Player to nat;
+    public player1 : Player;
+    public player2 : Player;
+    public attacker : Player;
+
+operations
+    public GameController: Player * Player ==> GameController
+    GameController(p1, p2) ==
+    (
+        player1 := p1;
+        player2 := p2;
+        attacker := player1;
+        scoreLine := {player1 |-> 0, player2 |-> 0};
+    );
+
+    public Reset: () ==> ()
+    Reset() == (
+        player1 := new Player(player1.name, player1.arngStrat, player1.guesStrat);
+        player2 := new Player(player2.name, player2.arngStrat, player2.guesStrat);
+        attacker := player1;
+        scoreLine := {player1 |-> 0, player2 |-> 0};
+    );
+    
+    public Reset: Player * Player ==> ()
+    Reset(p1, p2) == (
+        player1 := p1;
+        player2 := p2;
+        attacker := player1;
+        scoreLine := {player1 |-> 0, player2 |-> 0};
+    );
+
+    public Start: () ==> ()
+    Start() == (
+        player1.ArrangeShips();
+        player2.ArrangeShips();
+        while N_SHIPS not in set rng scoreLine do
+        (
+            let defender in set dom scoreLine \ {attacker} in
+            (
+                attacker.TakeTurn(defender);
+                scoreLine := scoreLine ++ {attacker |-> attacker.points};
+                attacker := defender;
+            )
+        );
+        let winner in set dom scoreLine be st scoreLine(winner) = N_SHIPS in
+            IO`printf(AnnounceWinner(winner), [card elems winner.guessHist.Coords]);
+            IO`printf(AnnounceScore(player1, player2), [player1.points, player2.points]);
+    )
+
+functions
+AnnounceWinner: Player -> seq of char
+AnnounceWinner(p) == "The winner is " ^ p.name ^ " with %s guesses!\r\n";
+
+AnnounceScore: Player * Player -> seq of char
+AnnounceScore(p1, p2) == "Score: " ^ p1.name ^ " %s - %s " ^ p2.name ^ "\r\n";
+
+
+end GameController

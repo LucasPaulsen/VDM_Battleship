@@ -1,0 +1,97 @@
+module BattleshipSimulator
+imports from ArrangingStrategy all,
+        from GuessingStrategy all,
+        from Player all,
+        from Grid all,
+        from Ship all,
+        from GameController all,
+        from GLOBAL functions nat2str renamed nat2str,
+        from IO all
+exports all
+
+definitions
+types
+ID = token;
+S ::
+    p1 : Player`ID
+    p2 : Player`ID
+    gc : GameController`ID
+   	arng1 : ArrangingStrategy`Type
+   	arng2 : ArrangingStrategy`Type
+    gues1 : GuessingStrategy`Type
+    gues2 : GuessingStrategy`Type;
+InstanceMap = map ID to S;
+
+state BSST of
+    BS_m : InstanceMap
+    init s == s = mk_BSST({|->})
+  end
+
+operations
+BattleShipSimulator: () ==> ID
+BattleShipSimulator() == let id = mk_token("BS"^nat2str(card dom BS_m)) in
+(
+    let arng1 = <DefaultArranger> in
+    let arng2 = <DummyArranger> in
+    let gues1 = <DefaultGuesser> in
+    let gues2 = <SearchGuesser> in
+    let p1 = Player`Player("P1", arng1, gues1) in
+    let p2 = Player`Player("P2", arng2, gues2) in
+    let gc = GameController`GameController(p1, p2) in
+    BS_m(id) := mk_S(p1, p2, gc, arng1, arng2, gues1, gues2);
+    return id
+);
+        
+runTest : () ==> ()
+runTest() == (
+    DefaultGame();
+    DefaultVsSearchWDefaultGame();
+    DefaultVsSearchWDummyGame();
+    DefaultWDummyGame();
+);
+
+DefaultGame : () ==> ()
+DefaultGame() == (
+    let p1 = Player`Player("P1_DefaultDefault", <DefaultArranger>, <DefaultGuesser>) in
+    let p2 = Player`Player("P2_DefaultDefault", <DefaultArranger>, <DefaultGuesser>) in
+    let gc = GameController`GameController(p1, p2) in
+    GameController`Start(gc);
+);
+
+DefaultVsSearchWDefaultGame : () ==> ()
+DefaultVsSearchWDefaultGame() == (
+    let p1 = Player`Player("P1_DefaultDefault", <DefaultArranger>, <DefaultGuesser>) in
+    let p2 = Player`Player("P2_DefaultSearch", <DefaultArranger>, <SearchGuesser>) in
+    let gc = GameController`GameController(p1, p2) in
+    GameController`Start(gc);
+);
+
+DefaultVsSearchWDummyGame : () ==> ()
+DefaultVsSearchWDummyGame() == (
+    let p1 = Player`Player("P1_DummyDefault", <DummyArranger>, <DefaultGuesser>) in
+    let p2 = Player`Player("P2_DummySearch", <DummyArranger>, <SearchGuesser>) in
+    let gc = GameController`GameController(p1, p2) in
+    GameController`Start(gc);
+);
+
+DefaultWDummyGame : () ==> ()
+DefaultWDummyGame() == (
+    let p1 = Player`Player("P1_DummyDefault", <DummyArranger>, <DefaultGuesser>) in
+    let p2 = Player`Player("P2_DummyDefault", <DummyArranger>, <DefaultGuesser>) in
+    let gc = GameController`GameController(p1, p2) in
+    GameController`Start(gc);
+);
+
+Run: () ==> ()
+Run() == (
+    dcl bs: ID := BattleShipSimulator();
+    dcl p1grid: Grid`ID := Player`GetState(BS_m(bs).p1).ownGrid;
+    dcl p2: Player`ID := BS_m(bs).p2;
+    GameController`Start(BS_m(bs).gc);
+    for all s in set Grid`GetState(p1grid).ships
+    do IO`println(Ship`GetState(s).hitCoords);
+)
+
+
+
+end BattleshipSimulator

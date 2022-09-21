@@ -1,0 +1,26 @@
+digraph G {
+	Player -> ArrangingStrategy;
+	Player -> Grid;
+	Player -> GLOBAL;
+	Player -> GuessingStrategy;
+	Grid -> GLOBAL;
+	Grid -> Ship;
+	DefaultGuesser -> GLOBAL;
+	DefaultGuesser -> GuessingStrategy;
+	GuessingStrategy -> GLOBAL;
+	DummyArranger -> GLOBAL;
+	DefaultArranger -> GLOBAL;
+	BattleShipSimulator -> Player;
+	BattleShipSimulator -> ArrangingStrategy;
+	BattleShipSimulator -> IO;
+	BattleShipSimulator -> GameController;
+	BattleShipSimulator -> GLOBAL;
+	BattleShipSimulator -> GuessingStrategy;
+	ArrangingStrategy -> GLOBAL;
+	GameController -> Player;
+	GameController -> IO;
+	GameController -> GLOBAL;
+	SearchGuesser -> GLOBAL;
+	SearchGuesser -> GuessingStrategy;
+	Ship -> GLOBAL;
+}

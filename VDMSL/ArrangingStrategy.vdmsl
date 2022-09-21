@@ -1,0 +1,19 @@
+module ArrangingStrategy
+imports from Grid all,
+        from DummyArranger all,
+        from DefaultArranger all
+exports all
+definitions
+
+types
+Type = <DummyArranger> | <DefaultArranger>
+
+operations
+Arrange: Type * Grid`ID ==> Grid`ID
+Arrange(t, g) ==
+    cases t:
+        <DummyArranger> -> return DummyArranger`Arrange(g),
+        <DefaultArranger> -> return DefaultArranger`Arrange(g),
+        others -> exit "Unknown type"
+    end;
+end ArrangingStrategy

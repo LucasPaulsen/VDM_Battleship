@@ -1,0 +1,40 @@
+class GLOBAL
+
+instance variables
+public N_ROWS: nat := 5;
+public N_COLS: nat := 5;
+public MIN_LEN: nat := 2;
+public MAX_LEN: nat := 4;
+public N_SHIPS_OF_LEN: map nat to nat := {2 |-> 2, 3 |-> 1, 4 |-> 1};
+public N_SHIPS: nat := RangeSum(N_SHIPS_OF_LEN);
+public ALL_COORDINATES: set of Coordinates := {mk_Coordinates(x,y) | x in set {1,...,N_COLS},
+                                                                     y in set {1,...,N_ROWS}}
+
+types
+public Coordinates :: 
+  X : nat
+  Y : nat;
+
+public GuessResult ::
+  Hit : bool
+  Sunk : bool;
+
+public GuessHistory ::
+    Coords: seq of Coordinates
+    Results: seq of GuessResult;
+
+functions
+public Xcoords: set of Coordinates -> set of nat
+Xcoords(coordSet) == {c.X | c in set coordSet};
+
+public Ycoords: set of Coordinates -> set of nat
+Ycoords(coordSet) == {c.Y | c in set coordSet};
+
+-- Sum of all range elements (persisting duplicates)
+RangeSum: map nat to nat -> nat
+RangeSum(mapping) == if dom mapping = {} then 0
+                      else let domVal in set dom mapping in
+                      mapping(domVal) + RangeSum({domVal} <-: mapping)
+measure card dom mapping
+
+end GLOBAL

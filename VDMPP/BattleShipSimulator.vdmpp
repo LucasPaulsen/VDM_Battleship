@@ -1,0 +1,82 @@
+class BattleShipSimulator is subclass of GLOBAL
+
+instance variables
+    p1 : Player;
+    p2 : Player;
+    gc : GameController;
+   	arng1 : ArrangingStrategy;
+   	arng2 : ArrangingStrategy;
+    gues1 : GuessingStrategy;
+    gues2 : GuessingStrategy;
+
+operations
+public BattleShipSimulator: () ==> BattleShipSimulator
+BattleShipSimulator() == (
+	arng1 := new DefaultArranger();
+	arng2 := new DummyArranger();
+	gues1 := new DefaultGuesser();
+	gues2 := new SearchGuesser();
+	p1 := new Player("P1", arng1, gues1);
+	p2 := new Player("P2", arng1, gues1);
+	gc := new GameController(p1, p2);
+);
+
+public setUp : () ==> ()
+setUp() == (
+	arng1 := new DefaultArranger();
+	arng2 := new DummyArranger();
+	gues1 := new DefaultGuesser();
+	gues2 := new SearchGuesser();
+	p1 := new Player("P1", arng1, gues1);
+	p2 := new Player("P2", arng1, gues1);
+	gc := new GameController(p1, p2);
+);
+        
+protected runTest : () ==> ()
+runTest() == (
+	gc.Reset();
+    DefaultGame();
+    DefaultVsSearchWDefaultGame();
+    DefaultVsSearchWDummyGame();
+    DefaultWDummyGame();
+);
+
+public DefaultGame : () ==> ()
+DefaultGame() == (
+	 p1 := new Player("P1", arng1, gues1);
+	 p2 := new Player("P2", arng1, gues1);
+	 gc := new GameController(p1, p2);
+	 gc.Reset(p1, p2);
+	 gc.Start();
+);
+
+public DefaultVsSearchWDefaultGame : () ==> ()
+DefaultVsSearchWDefaultGame() == (
+	 p1 := new Player("P1", arng1, gues1);
+	 p2 := new Player("P2", arng1, gues2);
+	 gc := new GameController(p1, p2);
+	 gc.Reset(p1, p2);
+	 gc.Start();
+);
+
+public DefaultVsSearchWDummyGame : () ==> ()
+DefaultVsSearchWDummyGame() == (
+	 p1 := new Player("P1", arng2, gues1);
+	 p2 := new Player("P2", arng2, gues2);
+	 gc := new GameController(p1, p2);
+	 gc.Reset(p1, p2);
+	 gc.Start();
+);
+
+public DefaultWDummyGame : () ==> ()
+DefaultWDummyGame() == (
+	 p1 := new Player("P1", arng2, gues1);
+	 p2 := new Player("P2", arng2, gues1);
+	 gc := new GameController(p1, p2);
+	 gc.Reset(p1, p2);
+	 gc.Start();
+);
+
+
+
+end BattleShipSimulator

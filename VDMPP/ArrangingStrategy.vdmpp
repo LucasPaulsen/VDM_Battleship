@@ -1,0 +1,7 @@
+class ArrangingStrategy is subclass of GLOBAL
+
+operations
+public Arrange: Grid ==> Grid
+Arrange(g) == is subclass responsibility
+
+end ArrangingStrategy

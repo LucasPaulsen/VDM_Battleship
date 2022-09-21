@@ -1,0 +1,15 @@
+module DefaultGuesser
+imports from GLOBAL types GuessHistory renamed GuessHistory
+                          Coordinates renamed Coordinates
+                    values ALL_COORDINATES renamed ALL_COORDINATES
+exports all
+
+definitions
+operations
+Guess: GuessHistory ==> Coordinates
+Guess(gh) == (
+    let c in set ALL_COORDINATES be st c not in set elems gh.Coords in
+        return c;
+);
+
+end DefaultGuesser

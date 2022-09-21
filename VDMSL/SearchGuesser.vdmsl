@@ -1,0 +1,47 @@
+module SearchGuesser
+imports from GLOBAL types GuessHistory renamed GuessHistory
+                          Coordinates renamed Coordinates
+                    values ALL_COORDINATES renamed ALL_COORDINATES,
+        from GuessingStrategy all
+exports all
+
+definitions
+
+operations
+Guess: GuessHistory ==> Coordinates
+Guess(gh) == (
+    if card elems gh.Coords < 1 then
+        let c in set ALL_COORDINATES in
+            return c
+    else
+        let r2h = GuessingStrategy`Recent2Hits(gh.Results, gh.Coords, []) in
+            if card elems r2h = 2 then -- if there has been made at least 2 previous hits
+                if GuessingStrategy`AreNeighbors(elems r2h) then 
+                    let nextCoords = GuessingStrategy`NextNeighbors(elems r2h) in
+                        let unchecked = GuessingStrategy`Unchecked(nextCoords, elems gh.Coords) inter ALL_COORDINATES in
+                            if not unchecked = {} then 
+                                let c in set unchecked in
+                                    return c
+                            else let c in set ALL_COORDINATES \ elems gh.Coords in -- default next coordinate
+                                return c
+                else let neighbors = GuessingStrategy`NeighborCoords(hd r2h) in -- search around previous hit if it was not in line with the one before
+                    let unchecked = GuessingStrategy`Unchecked(neighbors, elems gh.Coords) inter ALL_COORDINATES in
+                        if not unchecked = {} then 
+                            let c in set unchecked in
+                                return c
+                        else let c in set ALL_COORDINATES \ elems gh.Coords in -- default next coordinate
+                            return c
+            else let rh = GuessingStrategy`RecentHit(gh.Results, gh.Coords) in
+                if card elems rh = 1 then -- if there has been made only 1 previous hit
+                    let neighbors = GuessingStrategy`NeighborCoords(hd rh) in -- search around previous hit
+                        let unchecked = GuessingStrategy`Unchecked(neighbors, elems gh.Coords) inter ALL_COORDINATES in
+                            if not unchecked = {} then 
+                                let c in set unchecked in
+                                    return c
+                            else let c in set ALL_COORDINATES \ elems gh.Coords in -- default next coordinate
+                                return c        
+                else let c in set ALL_COORDINATES \ elems gh.Coords in -- default next coordinate
+                    return c  
+);
+
+end SearchGuesser

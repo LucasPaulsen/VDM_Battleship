@@ -1,0 +1,26 @@
+class DefaultArranger is subclass of ArrangingStrategy, GLOBAL
+
+operations
+public Arrange: Grid ==> Grid
+Arrange(g) == (
+    dcl nShipsOfLen: map nat to nat := N_SHIPS_OF_LEN;
+    while dom nShipsOfLen <> {} do
+        (
+        let combinations = {mk_(d, l, x, y) | d in set {true, false},
+                                              l in set dom nShipsOfLen, 
+                                              x in set {1,...,g.nCols},
+                                              y in set {1,...,g.nRows}} in
+        let mk_(d, l, x, y) in set combinations be st
+            g.PlaceShip(new Ship(mk_Coordinates(x,y), 
+                if d then mk_Coordinates(x+l-1,y) else mk_Coordinates(x,y+l-1))) in 
+                    if nShipsOfLen(l) > 1 then nShipsOfLen:= nShipsOfLen ++ {l |-> nShipsOfLen(l)-1}
+                        else nShipsOfLen := {l} <-: nShipsOfLen);
+    return g;)
+pre g.ships = {}
+post card g.ships = N_SHIPS;
+
+public run: () ==> ()
+run() == (
+    IO`println(Arrange(new Grid(5,5)));
+)
+end DefaultArranger

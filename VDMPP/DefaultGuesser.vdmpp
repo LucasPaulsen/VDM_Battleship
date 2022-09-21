@@ -1,0 +1,10 @@
+class DefaultGuesser is subclass of GuessingStrategy
+
+operations
+public Guess: GuessHistory ==> Coordinates
+Guess(gh) == (
+    let c in set ALL_COORDINATES be st c not in set elems gh.Coords in
+        return c;
+);
+
+end DefaultGuesser

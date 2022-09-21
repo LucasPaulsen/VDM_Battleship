@@ -1,0 +1,31 @@
+class Grid is subclass of GLOBAL
+
+instance variables
+public nRows: nat;
+public nCols: nat;
+public ships: set of Ship;
+inv forall s1, s2 in set ships & s1 <> s2 => dom s1.hitCoords inter dom s2.hitCoords = {};
+
+operations
+public Grid: nat * nat ==> Grid
+Grid(rows, cols) == 
+(
+    nRows := rows;
+    nCols := cols;
+    ships := {};
+);
+
+public PlaceShip: Ship ==> bool
+PlaceShip(ship) == if forall s in set ships & dom s.hitCoords inter dom ship.hitCoords = {} and
+                   forall c in set dom ship.hitCoords & c.X <= nCols and c.Y <= nRows
+                   then (ships := ships union {ship};
+                         return true)
+                   else return false;
+
+public Hit: Coordinates ==> GuessResult
+Hit(coords) == if exists s in set ships & coords in set dom s.hitCoords
+               then let s in set ships be st coords in set dom s.hitCoords in
+                    return s.Hit(coords)
+               else return mk_GuessResult(false, false)
+
+end Grid

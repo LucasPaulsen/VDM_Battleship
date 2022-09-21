@@ -1,0 +1,43 @@
+\documentclass[a4paper]{article}
+\usepackage{longtable}
+\usepackage[color]{vdmlisting}
+\usepackage{fullpage}
+\usepackage{hyperref}
+\begin{document}
+\title{}
+\author{}
+\begin{vdm_al}
+class BattleShipSimulator
+
+instance variables
+    public static p1 : [Player] := nil;
+    public static p2 : [Player] := nil;
+    public static gc : [GameController] := nil;
+
+operations
+public BattleShipSimulator: () ==> BattleShipSimulator
+    BattleShipSimulator() == 
+        let arng1 : ArrangingStrategy = new DefaultArranger() in
+        let arng2 : ArrangingStrategy = new DummyArranger() in
+        let gues1 : GuessingStrategy = new DefaultGuesser() in
+        let gues2 : GuessingStrategy = new SearchGuesser()
+        in (
+           p1 := new Player("P1", arng2, gues1);
+           p2 := new Player("P2", arng2, gues2);
+           gc := new GameController(p1, p2);
+           let rh = gues2.Recent2Hits([mk_GLOBAL`GuessResult(true, false), mk_GLOBAL`GuessResult(false, false),mk_GLOBAL`GuessResult(true, false)],
+           [mk_GLOBAL`Coordinates(1,1),mk_GLOBAL`Coordinates(1,3),mk_GLOBAL`Coordinates(1,4)], []) in IO`printf("%s \r\n", [rh]);
+           );
+public Run : () ==> ()
+Run () == (
+        gc.Start();
+        IO`printf("P1: %s guesses \r\n", [card elems p1.guessHist.Coords]);
+        IO`printf("P2: %s guesses \r\n", [card elems p2.guessHist.Coords]);
+        IO`printf("P1.guessHist.Coords: %s \r\n", [reverse p1.guessHist.Coords]);
+        /*IO`printf("P2.guessHist.Coords: %s \r\n", [p2.guessHist.Coords]);
+        IO`println(tl p1.guessHist.Coords = p2.guessHist.Coords)*/
+        )
+
+end BattleShipSimulator
+\end{vdm_al}
+\end{document}

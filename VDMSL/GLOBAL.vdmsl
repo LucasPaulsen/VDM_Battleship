@@ -1,0 +1,55 @@
+module GLOBAL
+exports all
+
+definitions
+values
+N_ROWS: nat = 5;
+N_COLS: nat = 5;
+MIN_LEN: nat = 2;
+MAX_LEN: nat = 4;
+N_SHIPS_OF_LEN: map nat to nat = {2 |-> 2, 3 |-> 1, 4 |-> 1};
+N_SHIPS: nat = RangeSum(N_SHIPS_OF_LEN);
+ALL_COORDINATES: set of Coordinates = {mk_Coordinates(x,y) | x in set {1,...,N_COLS},
+                                                                     y in set {1,...,N_ROWS}};
+DEC_2_CHAR: seq of char = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+
+types
+Coordinates :: 
+  X : nat
+  Y : nat;
+
+GuessResult ::
+  Hit : bool
+  Sunk : bool;
+
+GuessHistory ::
+    Coords: seq of Coordinates
+    Results: seq of GuessResult;
+
+functions
+Xcoords: set of Coordinates -> set of nat
+Xcoords(coordSet) == {c.X | c in set coordSet};
+
+Ycoords: set of Coordinates -> set of nat
+Ycoords(coordSet) == {c.Y | c in set coordSet};
+
+-- Sum of all range elements (persisting duplicates)
+RangeSum: map nat to nat -> nat
+RangeSum(mapping) == if dom mapping = {} then 0
+                      else let domVal in set dom mapping in
+                      mapping(domVal) + RangeSum({domVal} <-: mapping)
+measure card dom mapping;
+
+dec2str: nat -> char
+dec2str(n) == DEC_2_CHAR(n+1)
+pre n < 10;
+
+nat2strRec: nat * seq of char -> seq of char
+nat2strRec(n, acc) == if n < 10 then [dec2str(n)] ^ acc
+                      else nat2strRec(n div 10, [dec2str(n mod 10)] ^ acc)
+measure n;
+
+nat2str: nat -> seq of char
+nat2str(n) == nat2strRec(n, []);
+
+end GLOBAL

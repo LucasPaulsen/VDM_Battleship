@@ -1,0 +1,76 @@
+module GuessingStrategy
+imports from GLOBAL types GuessResult renamed GuessResult
+                          Coordinates renamed Coordinates
+                          GuessHistory renamed GuessHistory
+                    functions Xcoords renamed Xcoords
+                              Ycoords renamed Ycoords,
+        from DefaultGuesser all,
+        from SearchGuesser all
+exports all
+definitions
+
+types
+Type = <DefaultGuesser> | <SearchGuesser>
+
+operations
+Guess: Type * GuessHistory ==> Coordinates
+Guess(t, gh) == 
+    cases t:
+        <DefaultGuesser> -> return DefaultGuesser`Guess(gh),
+        <SearchGuesser> -> return SearchGuesser`Guess(gh),
+        others -> exit "Unknown type"
+    end;
+
+functions
+NeighborCoords: Coordinates -> set of Coordinates
+NeighborCoords(c) == (
+    {mk_Coordinates(c.X, c.Y-1)} union
+    {mk_Coordinates(c.X+1, c.Y)} union
+    {mk_Coordinates(c.X, c.Y+1)} union
+    {mk_Coordinates(c.X-1, c.Y)}
+);
+
+CommonNeighbors: Coordinates * Coordinates -> set of Coordinates
+CommonNeighbors(c1, c2) == NeighborCoords(c1) union NeighborCoords(c2);
+
+AreNeighbors: set of Coordinates -> bool -- uses same predicate as invariant for ship
+AreNeighbors(sc) == forall c1, c2 in set sc & 
+    (c1.X = c2.X and (c1.Y < c2.Y => {c1.Y, ..., c2.Y} subset Ycoords(sc))) or
+    (c1.Y = c2.Y and (c1.X < c2.X => {c1.X, ..., c2.X} subset Xcoords(sc)));
+
+NextNeighbors: set of Coordinates -> set of Coordinates
+NextNeighbors(sc) == (
+    let c1, c2 in set sc be st c1 <> c2 in
+    if c1.X = c2.X then ({mk_Coordinates(c.X, c.Y-1) | c in set sc} union {mk_Coordinates(c.X, c.Y+1) | c in set sc}) \ sc
+    else -- Y coordinates must be equal
+    ({mk_Coordinates(c.X-1, c.Y) | c in set sc} union {mk_Coordinates(c.X+1, c.Y) | c in set sc}) \ sc
+)
+pre AreNeighbors(sc);
+
+RecentHit: seq of GuessResult * seq of Coordinates -> seq of Coordinates
+RecentHit(gr, c) == if card inds gr = 1 then
+    if (hd gr).Hit then [hd c] else [] 
+    else if (hd gr).Hit then [hd c] else RecentHit(tl gr, tl c)
+measure card inds gr;
+
+Recent2Hits: seq of GuessResult * seq of Coordinates * seq of Coordinates -> seq of Coordinates
+Recent2Hits(gr, c, acc) == 
+(
+    if acc = [] then
+        if card inds gr = 1 then [] else
+            if (hd gr).Hit then Recent2Hits(tl gr, tl c, [hd c]) else Recent2Hits(tl gr, tl c, acc)
+    else 
+        if card inds gr = 1 and not (hd gr).Hit then [] else
+            if (hd gr).Hit then
+                acc ^ [hd c] 
+            else Recent2Hits(tl gr, tl c, acc)
+)
+measure card inds gr;
+
+Unchecked: set of Coordinates * set of Coordinates -> set of Coordinates
+Unchecked(in_sc, checked_sc) == {c | c in set in_sc & c not in set checked_sc}
+
+/*FindHitLine: seq of GuessResult * seq of Coordinates -> seq of Coordinates
+FindHitLine(gr, c) == if RecentHit()*/
+
+end GuessingStrategy

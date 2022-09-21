@@ -1,0 +1,60 @@
+module Ship
+imports from IO operations println renamed println, 
+        from GLOBAL types GuessResult renamed GuessResult
+                          Coordinates renamed Coordinates
+                    functions Xcoords renamed Xcoords
+                              Ycoords renamed Ycoords
+                              nat2str renamed nat2str 
+exports all
+
+definitions
+types
+ID = token;
+S :: 
+  length : nat
+  hitCoords : map Coordinates to bool
+      /* The coordinates shall invariantly be either horizontally or vertically aligned with no gaps inbetween */
+  inv s == forall c1, c2 in set dom s.hitCoords & 
+    (c1.X = c2.X and (c1.Y < c2.Y => {c1.Y, ..., c2.Y} subset Ycoords(dom s.hitCoords))) or
+    (c1.Y = c2.Y and (c1.X < c2.X => {c1.X, ..., c2.X} subset Xcoords(dom s.hitCoords)));
+InstanceMap = map ID to S;
+
+state ShipST of
+    Ship_m : InstanceMap
+    init s == s = mk_ShipST({|->})
+  end
+
+operations
+Ship: Coordinates * Coordinates ==> ID
+Ship(cStart, cEnd) == 
+      let id = mk_token("ship"^nat2str(card dom Ship_m)) in
+      if cStart.X = cEnd.X then (
+        Ship_m(id) := (mk_S(
+          (cEnd.Y - cStart.Y + 1),
+          {mk_Coordinates(cStart.X, Y) |-> false | Y in set {cStart.Y,...,cEnd.Y}}));
+        return id;
+      ) else (
+        Ship_m(id) := (mk_S(
+          (cEnd.X - cStart.X + 1),
+          {mk_Coordinates(X, cStart.Y) |-> false | X in set {cStart.X,...,cEnd.X}}));
+          return id;
+      )
+pre cStart.X = cEnd.X or cStart.Y = cEnd.Y;
+
+Hit: ID * Coordinates ==> GuessResult
+Hit(id, coord) == 
+    (if exists c in set dom Ship_m(id).hitCoords &
+    Ship_m(id).hitCoords(c) = false and c = coord
+    then Ship_m(id).hitCoords(coord) := true;
+    return mk_GuessResult(Ship_m(id).hitCoords(coord), rng Ship_m(id).hitCoords = {true}));
+--pre not rng Ship_m(id).hitCoords = {true};
+
+GetState : ID ==> S
+GetState(id)  == return Ship_m(id);
+
+Run: () ==> ()
+Run() == (
+  println(Ship(mk_Coordinates(1,1), mk_Coordinates(1,3)));
+)
+
+end Ship

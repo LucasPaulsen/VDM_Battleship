@@ -1,0 +1,41 @@
+class Player is subclass of GLOBAL
+
+instance variables
+public name: seq of char;
+public points: nat;
+inv points <= N_SHIPS;
+public ownGrid: Grid;
+public guessHist: GuessHistory;
+public arngStrat: ArrangingStrategy;
+public guesStrat: GuessingStrategy;
+
+operations
+public Player: seq of char * ArrangingStrategy * GuessingStrategy ==> Player
+Player(n, arngstrat, guesstrat) == 
+(
+    name := n;
+    points := 0;
+    guessHist := mk_GuessHistory([],[]);
+    ownGrid := new Grid(N_ROWS, N_COLS);
+    arngStrat := arngstrat;
+    guesStrat := guesstrat;
+);
+
+public ArrangeShips: () ==> ()
+ArrangeShips() == ownGrid := arngStrat.Arrange(ownGrid);
+
+public TakeTurn: (Player) ==> ()
+TakeTurn(p) == (
+    let c = guesStrat.Guess(guessHist) in
+        let gr = p.ReceiveGuess(c) in
+        (    
+            guessHist.Coords := [c] ^ guessHist.Coords;
+            guessHist.Results := [gr] ^ guessHist.Results;
+            if gr.Sunk then points := points + 1;
+        )
+);
+public ReceiveGuess: Coordinates ==> GuessResult
+ReceiveGuess(coords) == ownGrid.Hit(coords)
+
+
+end Player
