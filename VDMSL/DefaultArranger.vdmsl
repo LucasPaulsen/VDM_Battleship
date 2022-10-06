@@ -52,9 +52,7 @@ Arrange(g) == (dcl nShipsOfLen: map nat to nat := N_SHIPS_OF_LEN;
 
 run: () ==> ()
 	run() == (
-        dcl name: seq of char := "Hey";
         dcl num: nat := 5134;
-		printf("Hello World %s\r\n", [2]);
         println(mk_token("Ship"^ nat2str(num)));
 		);
 

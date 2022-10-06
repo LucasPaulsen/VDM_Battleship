@@ -23,3 +23,8 @@ Arrange(g) == (
 --pre Grid`getState(g).ships = {}
 --post card Grid`getState(g).ships = N_SHIPS;
 end DummyArranger
+
+--(mk_Coordinates(1,1), mk_Coordinates(2,1)),
+-- s2 = MakeShip(mk_Coordinates(3,1), mk_Coordinates(4,1)),
+-- s3 = MakeShip(mk_Coordinates(1,3), mk_Coordinates(3,3)),
+-- s4 = MakeShip(mk_Coordinates(1,4), mk_Coordinates(4,4))
