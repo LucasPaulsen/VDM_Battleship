@@ -1,11 +1,11 @@
 class Ship is subclass of GLOBAL
 
 types
-hitcoordinates = map Coordinates to bool;
+Hitcoordinates = map Coordinates to bool;
 
 instance variables
     public length: nat;
-    public hitCoords: hitcoordinates;
+    public hitCoords: Hitcoordinates;
     /* The coordinates shall invariantly be either horizontally or vertically aligned with no gaps inbetween */
     inv forall c1, c2 in set dom hitCoords & 
     (c1.X = c2.X and (c1.Y < c2.Y => {c1.Y, ..., c2.Y} subset Ycoords(dom hitCoords))) or
@@ -24,10 +24,9 @@ pre cStart.X = cEnd.X or cStart.Y = cEnd.Y;
 
 public Hit: Coordinates ==> GuessResult
 Hit(coord) == 
-    (if exists c in set dom hitCoords &
-    hitCoords(c) = false and c = coord
+    (if exists c in set dom hitCoords & not hitCoords(c) and c = coord
     then hitCoords(coord) := true;
     return mk_GuessResult(hitCoords(coord), rng hitCoords = {true}))
-pre not rng hitCoords = {true};
+pre rng hitCoords <> {true};
 
 end Ship

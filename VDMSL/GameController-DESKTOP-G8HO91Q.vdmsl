@@ -74,10 +74,5 @@ AnnounceScore(p1, p2) == return "Score: " ^ Player`GetState(p1).name ^ " %s - %s
 GetState: ID ==> S
 GetState(id) == return GC_m(id);
 
-Run: () ==> ()
-Run() == (
-    IO`println("hey man")
-)
-
 
 end GameController

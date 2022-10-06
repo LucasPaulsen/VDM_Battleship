@@ -1,0 +1,29 @@
+types 
+
+Grid = seq of Ship
+inv g == len g <= N_SHIPS
+and forall s in set elems g & elems s.Coords subset ALL_COORDINATES
+
+functions
+
+PlaceableShip: Grid * Ship -> bool
+PlaceableShip(g, s) == elems s.Coords subset ALL_COORDINATES and
+forall ships in set elems g & elems s.Coords inter elems ships.Coords = {};
+
+PlaceShip: Grid * Ship -> Grid
+PlaceShip(g, s) == g ^ [s]
+pre PlaceableShip(g, s)
+post len RESULT > len g;
+
+Hit: Grid * Coordinates -> Grid * GuessResult
+Hit(g, c) == if exists s in set elems g & c in set elems s.Coords
+               then let i in set inds g be st c in set elems g(i).Coords in
+                let hs = HitShip(g(i), c) in
+                  mk_(seqInsert[Ship](g, hs.#1, i), hs.#2)
+               else mk_(g, mk_GuessResult(false,false));
+
+
+test: () -> Grid * GuessResult
+test() == let s = MakeShip(mk_Coordinates(1,1), mk_Coordinates(1,4)) in
+          let g = PlaceShip([], s) in 
+          Hit(g, mk_Coordinates(1,2))

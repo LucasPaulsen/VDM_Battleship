@@ -1,0 +1,25 @@
+{
+  "configurations": [
+    {
+      "name": "Launch VDM Debug from BattleShipSimulator`DefaultGame()",
+      "type": "vdm",
+      "request": "launch",
+      "noDebug": false,
+      "dynamicTypeChecks": true,
+      "invariantsChecks": true,
+      "preConditionChecks": true,
+      "postConditionChecks": true,
+      "measureChecks": true,
+      "defaultName": null,
+      "command": "print new BattleShipSimulator().DefaultGame()"
+    },
+    {
+      "name": "Lens config: Launch BattleShipSimulator`DefaultWDummyGame",
+      "type": "vdm",
+      "request": "launch",
+      "noDebug": true,
+      "defaultName": "BattleShipSimulator",
+      "command": "p new BattleShipSimulator().DefaultWDummyGame()"
+    }
+  ]
+}

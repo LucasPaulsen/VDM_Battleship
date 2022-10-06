@@ -1,0 +1,26 @@
+-- ||| ALTERNATIVE COORDINATES |||
+    -- let s1 = MakeShip(mk_Coordinates(1,1), mk_Coordinates(2,1)),
+    --     s2 = MakeShip(mk_Coordinates(3,1), mk_Coordinates(4,1)),
+    --     s3 = MakeShip(mk_Coordinates(1,3), mk_Coordinates(3,3)),
+    --     s4 = MakeShip(mk_Coordinates(1,4), mk_Coordinates(4,4)) in
+
+functions
+DummyArrange: () -> Grid
+DummyArrange() == (
+    let s1 = MakeShip(mk_Coordinates(2,1), mk_Coordinates(5,1)),
+        s2 = MakeShip(mk_Coordinates(1,1), mk_Coordinates(1,3)),
+        s3 = MakeShip(mk_Coordinates(3,3), mk_Coordinates(3,4)),
+        s4 = MakeShip(mk_Coordinates(2,4), mk_Coordinates(2,5)) in
+    DummyArrangeRec([], [s1, s2, s3, s4])
+    )
+post similarSeqs[nat]([s.Length | s in seq RESULT], SHIPS_BY_LEN);
+
+DummyArrangeRec: Grid * Grid -> Grid
+DummyArrangeRec(g, s) == (
+    if s = [] then g
+    else if PlaceableShip(g, hd s) then DummyArrangeRec(PlaceShip(g,hd s), tl s) else g
+)
+measure DummyArrangeRecMeasure;
+
+DummyArrangeRecMeasure: Grid * Grid -> nat
+DummyArrangeRecMeasure(g, s) == len s

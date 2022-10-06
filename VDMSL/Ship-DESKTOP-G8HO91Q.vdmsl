@@ -1,6 +1,5 @@
 module Ship
-imports from IO operations println renamed println, 
-        from GLOBAL types GuessResult renamed GuessResult
+imports from GLOBAL types GuessResult renamed GuessResult
                           Coordinates renamed Coordinates
                     functions Xcoords renamed Xcoords
                               Ycoords renamed Ycoords
@@ -50,11 +49,5 @@ pre rng Ship_m(id).hitCoords <> {true};
 
 GetState : ID ==> S
 GetState(id)  == return Ship_m(id);
-
-Run: () ==> ()
-Run() == (
-  println("hey");
-  --println(Ship(mk_token("ship"),mk_Coordinates(1,1), mk_Coordinates(1,3)));
-)
 
 end Ship

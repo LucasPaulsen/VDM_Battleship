@@ -1,0 +1,11 @@
+types
+ArrangingStrategyType = <DummyArranger> | <DefaultArranger>
+
+functions
+Arrange: ArrangingStrategyType -> Grid
+Arrange(t) ==
+    cases t:
+        <DefaultArranger> -> DefaultArrange(),
+        <DummyArranger> -> DummyArrange(),
+        others -> DefaultArrange()
+    end;

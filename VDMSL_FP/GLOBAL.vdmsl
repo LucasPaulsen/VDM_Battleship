@@ -1,0 +1,72 @@
+values
+N_ROWS: nat = 5;
+N_COLS: nat = 5;
+MIN_LEN: nat = 2;
+MAX_LEN: nat = 4;
+SHIPS_BY_LEN: seq of nat = [2,2,3,4];
+N_SHIPS: nat = len SHIPS_BY_LEN;
+ALL_COORDINATES: set of Coordinates = {mk_Coordinates(x,y) | x in set {1,...,N_COLS},
+                                                             y in set {1,...,N_ROWS}};
+MAX_TOTAL_GUESSES: nat = card ALL_COORDINATES + card ALL_COORDINATES;
+
+types
+Coordinates :: 
+  X : nat
+  Y : nat;
+
+GuessResult ::
+  Hit : bool
+  Sunk : bool;
+
+GuessHistory ::
+    Coords: seq of Coordinates
+    Results: seq of GuessResult;
+
+functions
+Xcoords: set of Coordinates -> set of nat
+Xcoords(coordSet) == {c.X | c in set coordSet};
+
+Ycoords: set of Coordinates -> set of nat
+Ycoords(coordSet) == {c.Y | c in set coordSet};
+
+-- Insert element e in sequence s at index i (replaces element at i)
+seqInsert[@T]: (seq of @T) * @T * nat1 -> seq of @T
+seqInsert(s, e, i) == if len s = 0 then [] else
+                      if i = 1 then [e] ^ tl s
+                      else [hd s] ^ seqInsert[@T](tl s, e, i-1)
+pre i <= len s
+post len RESULT = len s
+measure seqInsertMeasure;
+
+seqInsertMeasure[@T]: (seq of @T) * @T * nat1 -> nat
+seqInsertMeasure(s, e, i) == len s;
+
+-- Remove element from seq (first occurance)
+seqRemove[@T]: (seq of @T) * @T -> seq of @T
+seqRemove(s, e) == if s = [] then []
+                   else if hd s = e then tl s
+                   else [hd s] ^ seqRemove[@T](tl s, e)
+pre s <> [] => e in set elems s
+post len RESULT = len s - 1
+measure seqRemoveMeasure;
+
+seqRemoveMeasure[@T]: (seq of @T) * @T -> nat
+seqRemoveMeasure(s, e) == len s;
+
+-- Evaluate if two seqs hold the same elements (not necessarily same order)
+similarSeqs[@T]: (seq of @T) * (seq of @T) -> bool
+similarSeqs(s1, s2) == if s2 = [] then true 
+                       else if hd s1 in set elems s2
+                        then similarSeqs[@T](tl s1, seqRemove[@T](s2, hd s1))
+                       else false
+pre len s1 = len s2
+measure similarSeqsMeasure;
+
+similarSeqsMeasure[@T]: (seq of @T) * (seq of @T) -> nat
+similarSeqsMeasure(s1,s2) == len s1;
+
+-- test: nat -> seq of nat
+-- test(n) == seqRemove[nat]([1,2,3,4,1,1,4,5], n);
+
+-- test1: seq of nat * seq of nat -> bool
+-- test1(s1,s2) == similarSeqs[nat](s1, s2);

@@ -11,7 +11,8 @@ N_SHIPS_OF_LEN: map nat to nat = {2 |-> 2, 3 |-> 1, 4 |-> 1};
 N_SHIPS: nat = RangeSum(N_SHIPS_OF_LEN);
 ALL_COORDINATES: set of Coordinates = {mk_Coordinates(x,y) | x in set {1,...,N_COLS},
                                                                      y in set {1,...,N_ROWS}};
-DEC_2_CHAR: seq of char = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+dec2char: map nat to char = {0 |-> '0', 1 |-> '1', 2 |-> '2', 3 |-> '3', 4 |-> '4',
+                             5 |-> '5', 6 |-> '6', 7 |-> '7', 8 |-> '8', 9 |-> '9'}
 
 types
 Coordinates :: 
@@ -41,7 +42,19 @@ RangeSum(mapping) == if dom mapping = {} then 0
 measure card dom mapping;
 
 dec2str: nat -> char
-dec2str(n) == DEC_2_CHAR(n+1)
+dec2str(n) == 
+    cases n:
+    0 -> '0',
+    1 -> '1',
+    2 -> '2',
+    3 -> '3',
+    4 -> '4',
+    5 -> '5',
+    6 -> '6',
+    7 -> '7',
+    8 -> '8',
+    9 -> '9'
+    end
 pre n < 10;
 
 nat2strRec: nat * seq of char -> seq of char

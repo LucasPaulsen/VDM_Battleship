@@ -1,0 +1,32 @@
+types
+Ship ::
+    Coords : seq1 of Coordinates
+    Hit : seq1 of bool
+    Length : nat
+    inv s == len s.Coords = card elems s.Coords
+    and len s.Coords = len s.Hit
+    and forall c1, c2 in set elems s.Coords & 
+    ((c1.X = c2.X and (c1.Y < c2.Y => {c1.Y, ..., c2.Y} subset Ycoords(elems s.Coords))) or
+    (c1.Y = c2.Y and (c1.X < c2.X => {c1.X, ..., c2.X} subset Xcoords(elems s.Coords))));
+
+functions
+MakeShip: Coordinates * Coordinates -> Ship
+MakeShip(cStart, cEnd) == 
+    if cStart.X = cEnd.X then 
+        mk_Ship([mk_Coordinates(cStart.X, Y) | Y in set {cStart.Y,...,cEnd.Y}],
+                [false | Y in set {cStart.Y,...,cEnd.Y}],
+                cEnd.Y - cStart.Y + 1)
+    else mk_Ship([mk_Coordinates(X, cStart.Y) | X in set {cStart.X,...,cEnd.X}],
+                 [false | X in set {cStart.X,...,cEnd.X}],
+                 cEnd.X - cStart.X + 1)
+pre (cStart.X = cEnd.X or cStart.Y = cEnd.Y)
+    and cStart.X <= cEnd.X and cStart.Y <= cEnd.Y;
+
+HitShip: Ship * Coordinates -> Ship * GuessResult
+HitShip(s, coord) == let i in set inds s.Coords be st s.Coords(i) = coord in
+    let postHit = mk_Ship(s.Coords, seqInsert[bool](s.Hit, true, i), s.Length) in
+    mk_(
+        postHit,
+        mk_GuessResult(true, elems postHit.Hit = {true})
+    )
+pre elems s.Hit <> {true};

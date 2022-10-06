@@ -1,0 +1,32 @@
+types
+GameController ::
+    attacker : Player
+    defender : Player
+    inv g == g.attacker <> g.defender;
+
+functions
+MakeGameController: Player * Player -> GameController
+MakeGameController(p1, p2) == mk_GameController(p1, p2);
+
+Reset: Player * Player -> GameController
+Reset(p1, p2) == mk_GameController(ResetPlayer(p1), ResetPlayer(p2))
+post RESULT.attacker.Points = 0 and RESULT.defender.Points = 0;
+
+Start: GameController -> GameController
+Start(gc) == 
+    if gc.defender.Points < N_SHIPS then 
+        let mk_(a, d) = TakeTurn(gc.attacker, gc.defender) in
+            Start(mk_GameController(d, a))
+    else gc
+measure StartMeasure;
+
+StartMeasure: GameController -> nat
+StartMeasure(gc) == 
+    let nGuesses = len gc.attacker.guessHist.Coords + len gc.defender.guessHist.Coords in
+        MAX_TOTAL_GUESSES - nGuesses;
+
+-- AnnounceWinner: Player -> seq of char
+-- AnnounceWinner(p) == "The winner is " ^ p.Name ^ " with %s guesses!\r\n";
+
+-- AnnounceScore: GameController -> seq of char * nat * seq of char * nat
+-- AnnounceScore(gc) == mk_(gc.defender.Name, gc.defender.Points, gc.attacker.Name, gc.attacker.Points);

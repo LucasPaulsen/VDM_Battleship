@@ -1,0 +1,30 @@
+module DummyArranger
+imports from Grid all,
+        from Ship all,
+        from GLOBAL types Coordinates renamed Coordinates
+                    --values N_SHIPS renamed N_SHIPS
+exports all
+definitions
+
+operations
+Arrange: Grid`ID ==> Grid`ID
+Arrange(g) == (
+    dcl ship1:Ship`ID := Ship`Ship(mk_Coordinates(2,1), mk_Coordinates(5,1));
+    dcl ship2:Ship`ID := Ship`Ship(mk_Coordinates(1,1), mk_Coordinates(1,3));
+    dcl ship3:Ship`ID := Ship`Ship(mk_Coordinates(3,3), mk_Coordinates(3,4));
+    dcl ship4:Ship`ID := Ship`Ship(mk_Coordinates(2,4), mk_Coordinates(2,5));
+    if Grid`PlaceShip(g, ship1) and
+       Grid`PlaceShip(g, ship2) and
+       Grid`PlaceShip(g, ship3) and
+       Grid`PlaceShip(g, ship4) then
+    return g
+    else return g
+    )
+--pre Grid`getState(g).ships = {}
+--post card Grid`getState(g).ships = N_SHIPS;
+end DummyArranger
+
+--(mk_Coordinates(1,1), mk_Coordinates(2,1)),
+-- s2 = MakeShip(mk_Coordinates(3,1), mk_Coordinates(4,1)),
+-- s3 = MakeShip(mk_Coordinates(1,3), mk_Coordinates(3,3)),
+-- s4 = MakeShip(mk_Coordinates(1,4), mk_Coordinates(4,4))

@@ -1,0 +1,73 @@
+types
+-- BattleShipGame ::
+--     p1 : Player
+--     p2 : Player
+--     gc : GameController
+--    	arng1 : ArrangingStrategyType
+--    	arng2 : ArrangingStrategyType
+--     gues1 : GuessingStrategyType
+--     gues2 : GuessingStrategyType;
+
+GameResult ::
+    name : seq of char
+    p1name : seq of char
+    p1points : nat
+    p1nguess : nat
+    p2ame : seq of char
+    p2points : nat
+    p2nguess : nat
+
+    
+functions
+
+DefaultGame : () -> GameResult
+DefaultGame() == (
+    let p1 = MakePlayer("P1_DefaultDefault", <DefaultArranger>, <DefaultGuesser>),
+        p2 = MakePlayer("P2_DefaultDefault", <DefaultArranger>, <DefaultGuesser>) in
+    let gc = MakeGameController(ArrangeShips(p1), ArrangeShips(p2)) in
+    GC2GameResult("DefaultGame", Start(gc))
+);
+
+DefaultVsSearchWDefaultGame: () -> GameResult
+DefaultVsSearchWDefaultGame() == (
+    let p1 = MakePlayer("P1_DefaultDefault", <DefaultArranger>, <DefaultGuesser>) in
+    let p2 = MakePlayer("P2_DefaultSearch", <DefaultArranger>, <SearchGuesser>) in
+    let gc = MakeGameController(ArrangeShips(p1), ArrangeShips(p2)) in
+    GC2GameResult("DefaultVsSearchWDefaultGame", Start(gc))
+);
+
+DefaultVsSearchWDummyGame : () -> GameResult
+DefaultVsSearchWDummyGame() == (
+    let p1 = MakePlayer("P1_DummyDefault", <DummyArranger>, <DefaultGuesser>) in
+    let p2 = MakePlayer("P2_DummySearch", <DummyArranger>, <SearchGuesser>) in
+    let gc = MakeGameController(ArrangeShips(p1), ArrangeShips(p2)) in
+    GC2GameResult("DefaultVsSearchWDummyGame", Start(gc))
+);
+
+DefaultWDummyGame : () -> GameResult
+DefaultWDummyGame() == (
+    let p1 = MakePlayer("P1_DummyDefault", <DummyArranger>, <DefaultGuesser>) in
+    let p2 = MakePlayer("P2_DummyDefault", <DummyArranger>, <DefaultGuesser>) in
+    let gc = MakeGameController(ArrangeShips(p1), ArrangeShips(p2)) in
+    GC2GameResult("DefaultWDummyGame", Start(gc))
+);
+
+GC2GameResult: seq of char * GameController -> GameResult
+GC2GameResult(game, gc) == mk_GameResult(game, 
+    gc.attacker.Name, gc.attacker.Points, card elems gc.attacker.guessHist.Coords,
+    gc.defender.Name, gc.defender.Points, card elems gc.defender.guessHist.Coords)
+
+
+operations
+
+runTest : () ==> ()
+runTest() == (
+    IO`print(DefaultGame());
+    IO`print("\r\n");
+    IO`print(DefaultVsSearchWDefaultGame());
+    IO`print("\r\n");
+    IO`print(DefaultVsSearchWDummyGame());
+    IO`print("\r\n");
+    IO`print(DefaultWDummyGame());
+    IO`print("\r\n");
+);

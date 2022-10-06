@@ -1,11 +1,11 @@
 {
   "configurations": [
     {
-      "name": "Lens config: Launch BattleshipSimulator`runTest",
+      "name": "Lens config: Launch DEFAULT`runTest",
       "type": "vdm",
       "request": "launch",
       "noDebug": true,
-      "defaultName": "BattleshipSimulator",
+      "defaultName": "DEFAULT",
       "command": "p runTest()"
     }
   ]
