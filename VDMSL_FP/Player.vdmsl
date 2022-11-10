@@ -1,49 +1,51 @@
+module Player
+imports from GLOBAL all,
+        from Grid all,
+        from ArrangingStrategy all,
+        from GuessingStrategy all
+exports all
+
+definitions
+
 types
 Player ::
     Name : seq of char
     Points : nat
-    PGrid : Grid
-    guessHist: GuessHistory
-    arngStrat: ArrangingStrategyType
-    guesStrat: GuessingStrategyType
-inv p == p.Points <= N_SHIPS;
+    PGrid : Grid`Grid
+    guessHist: GLOBAL`GuessHistory
+    arngStrat: ArrangingStrategy`ArngType
+    guesStrat: GuessingStrategy`GuesType
+inv p == p.Points <= GLOBAL`N_SHIPS;
 
 
 functions 
-MakePlayer: seq of char * ArrangingStrategyType * GuessingStrategyType -> Player
-MakePlayer(s, a, g) == mk_Player(s, 0, [], mk_GuessHistory([],[]), a, g);
+MakePlayer: seq of char * ArrangingStrategy`ArngType * GuessingStrategy`GuesType -> Player
+MakePlayer(s, a, g) == mk_Player(s, 0, [], mk_GLOBAL`GuessHistory([],[]), a, g);
 
 ResetPlayer: Player -> Player
 ResetPlayer(p) == MakePlayer(p.Name, p.arngStrat, p.guesStrat);
 
 ArrangeShips: Player -> Player
-ArrangeShips(p) == mk_Player(p.Name, p.Points, Arrange(p.arngStrat), p.guessHist, p.arngStrat, p.guesStrat);
+ArrangeShips(p) == mk_Player(p.Name, p.Points, ArrangingStrategy`Arrange(p.arngStrat), p.guessHist, p.arngStrat, p.guesStrat);
+
+ReceiveGuess: Player * GLOBAL`Coordinates -> Player * GLOBAL`GuessResult
+ReceiveGuess(p, c) == let gr = Grid`Hit(p.PGrid, c) in 
+    mk_(mk_Player(p.Name, p.Points, gr.#1, p.guessHist, p.arngStrat, p.guesStrat),
+        gr.#2);
 
 TakeTurn: Player * Player -> Player * Player
-TakeTurn(p, o) == (
-    let c = Guess(p.guesStrat, p.guessHist) in
-        let gr = ReceiveGuess(o, c) in   
+TakeTurn(p1, p2) == (
+    let c = GuessingStrategy`Guess(p1.guesStrat, p1.guessHist) in
+        let gr = ReceiveGuess(p2, c) in   
             mk_(
-                mk_Player(p.Name, 
-                if gr.#2.Sunk then p.Points + 1 else p.Points,
-                p.PGrid,
-                mk_GuessHistory([c] ^ p.guessHist.Coords, [gr.#2] ^ p.guessHist.Results),
-                p.arngStrat,
-                p.guesStrat),
+                mk_Player(p1.Name, 
+                if gr.#2.Sunk then p1.Points + 1 else p1.Points,
+                p1.PGrid,
+                mk_GLOBAL`GuessHistory([c] ^ p1.guessHist.Coords, [gr.#2] ^ p1.guessHist.Results),
+                p1.arngStrat,
+                p1.guesStrat),
             gr.#1)
 )
-post len RESULT.#1.guessHist.Coords = len p.guessHist.Coords + 1;
+post len RESULT.#1.guessHist.Coords = len p1.guessHist.Coords + 1;
 
-ReceiveGuess: Player * Coordinates -> Player * GuessResult
-ReceiveGuess(p, c) == let gr = Hit(p.PGrid, c) in 
-    mk_(mk_Player(p.Name, p.Points, gr.#1, p.guessHist, p.arngStrat, p.guesStrat),
-        gr.#2)
-
--- run: () ==> ()
--- run() == (
---   dcl p: token := Player("John", <DummyArranger>, <DefaultGuesser>);
---   dcl g: token := Player_m(p).ownGrid;
---   println(Grid`GetState(g).ships);
---   ArrangeShips(p);
---   println(Grid`GetState(g).ships);
--- )
+end Player

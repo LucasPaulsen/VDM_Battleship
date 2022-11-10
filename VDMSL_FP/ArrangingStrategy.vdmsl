@@ -1,11 +1,18 @@
+module ArrangingStrategy
+imports from Grid all,
+        from DummyArranger all,
+        from DefaultArranger all
+exports all
+definitions
+
 types
-ArrangingStrategyType = <DummyArranger> | <DefaultArranger>
+ArngType = seq of char
 
 functions
-Arrange: ArrangingStrategyType -> Grid
+Arrange: ArngType -> Grid`Grid
 Arrange(t) ==
-    cases t:
-        <DefaultArranger> -> DefaultArrange(),
-        <DummyArranger> -> DummyArrange(),
-        others -> DefaultArrange()
-    end;
+    if t = "DefaultArranger" then DefaultArranger`DefaultArrange()
+    else if t = "DummyArranger" then DummyArranger`DummyArrange()
+    else DefaultArranger`DefaultArrange();
+
+end ArrangingStrategy

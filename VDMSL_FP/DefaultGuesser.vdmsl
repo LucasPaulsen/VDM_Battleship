@@ -1,6 +1,12 @@
+module DefaultGuesser
+imports from GLOBAL all
+exports all
+definitions
+
 functions
-DefaultGuess: GuessHistory -> Coordinates
-DefaultGuess(gh) == (
-    let c in set ALL_COORDINATES be st c not in set elems gh.Coords in
-    c
-);
+
+DefaultGuess: GLOBAL`GuessHistory -> GLOBAL`Coordinates
+DefaultGuess(gh) == 
+    let c in set GLOBAL`ALL_COORDINATES be st c not in set elems gh.Coords in c
+
+end DefaultGuesser

@@ -1,30 +1,85 @@
-functions
-DefaultNextC: GuessHistory -> Coordinates
-DefaultNextC(gh) == let c in set ALL_COORDINATES \ elems gh.Coords in c;
+module SearchGuesser
+imports from GLOBAL all
+exports all
+definitions
 
-SearchGuess: GuessHistory -> Coordinates
+functions
+NeighborCoords: GLOBAL`Coordinates -> set of GLOBAL`Coordinates
+NeighborCoords(c) == (
+    {mk_GLOBAL`Coordinates(c.X, c.Y-1)} union
+    {mk_GLOBAL`Coordinates(c.X+1, c.Y)} union
+    {mk_GLOBAL`Coordinates(c.X, c.Y+1)} union
+    {mk_GLOBAL`Coordinates(c.X-1, c.Y)}
+);
+
+CommonNeighbors: GLOBAL`Coordinates * GLOBAL`Coordinates -> set of GLOBAL`Coordinates
+CommonNeighbors(c1, c2) == NeighborCoords(c1) union NeighborCoords(c2);
+
+AreNeighbors: set of GLOBAL`Coordinates -> bool -- uses same predicate as invariant for ship
+AreNeighbors(sc) == forall c1, c2 in set sc & 
+    (c1.X = c2.X and (c1.Y < c2.Y => {c1.Y, ..., c2.Y} subset GLOBAL`Ycoords(sc))) or
+    (c1.Y = c2.Y and (c1.X < c2.X => {c1.X, ..., c2.X} subset GLOBAL`Xcoords(sc)));
+
+NextNeighbors: set of GLOBAL`Coordinates -> set of GLOBAL`Coordinates
+NextNeighbors(sc) == (
+    let c1, c2 in set sc be st c1 <> c2 in
+    if c1.X = c2.X then ({mk_GLOBAL`Coordinates(c.X, c.Y-1) | c in set sc} union {mk_GLOBAL`Coordinates(c.X, c.Y+1) | c in set sc}) \ sc
+    else -- Y coordinates must be equal
+    ({mk_GLOBAL`Coordinates(c.X-1, c.Y) | c in set sc} union {mk_GLOBAL`Coordinates(c.X+1, c.Y) | c in set sc}) \ sc
+)
+pre AreNeighbors(sc);
+
+RecentHit: seq of GLOBAL`GuessResult * seq of GLOBAL`Coordinates -> seq of GLOBAL`Coordinates
+RecentHit(gr, c) == if gr = [] then []
+                    else if (hd gr).Hit then [hd c]
+                    else RecentHit(tl gr, tl c)
+measure card inds gr;
+
+Recent2Hits: seq of GLOBAL`GuessResult * seq of GLOBAL`Coordinates * seq of GLOBAL`Coordinates -> seq of GLOBAL`Coordinates
+Recent2Hits(gr, c, acc) == 
+(
+    if gr = [] then acc
+    else if len acc = 2 then acc
+    else if (hd gr).Hit then Recent2Hits(tl gr, tl c, acc ^ [hd c]) 
+    else Recent2Hits(tl gr, tl c, acc)
+)
+measure card inds gr;
+
+Unchecked: set of GLOBAL`Coordinates * set of GLOBAL`Coordinates -> set of GLOBAL`Coordinates
+Unchecked(in_sc, checked_sc) == {c | c in set in_sc & c not in set checked_sc};
+
+/*FindHitLine: seq of GLOBAL`GuessResult * seq of GLOBAL`Coordinates -> seq of GLOBAL`Coordinates
+FindHitLine(gr, c) == if RecentHit()*/
+
+
+DefaultNextC: GLOBAL`GuessHistory -> GLOBAL`Coordinates
+DefaultNextC(gh) == let c in set GLOBAL`ALL_COORDINATES \ elems gh.Coords in c;
+
+SearchGuess: GLOBAL`GuessHistory -> GLOBAL`Coordinates
 SearchGuess(gh) == (
     if card elems gh.Coords < 1 then
-        let c in set ALL_COORDINATES in c
+        let c in set GLOBAL`ALL_COORDINATES in c
     else
         let r2h = Recent2Hits(gh.Results, gh.Coords, []) in
             if card elems r2h = 2 then -- if there has been made at least 2 previous hits
                 if AreNeighbors(elems r2h) then 
                     let nextCoords = NextNeighbors(elems r2h) in
-                        let unchecked = Unchecked(nextCoords, elems gh.Coords) inter ALL_COORDINATES in
+                        let unchecked = Unchecked(nextCoords, elems gh.Coords) inter GLOBAL`ALL_COORDINATES in
                             if unchecked <> {} then let c in set unchecked in c
                             else DefaultNextC(gh)
                 else let neighbors = NeighborCoords(hd r2h) in -- search around previous hit if it was not in line with the one before
-                    let unchecked = Unchecked(neighbors, elems gh.Coords) inter ALL_COORDINATES in
+                    let unchecked = Unchecked(neighbors, elems gh.Coords) inter GLOBAL`ALL_COORDINATES in
                         if not unchecked = {} then 
                             let c in set unchecked in c
                         else DefaultNextC(gh)
             else let rh = RecentHit(gh.Results, gh.Coords) in
                 if card elems rh = 1 then -- if there has been made only 1 previous hit
                     let neighbors = NeighborCoords(hd rh) in -- search around previous hit
-                        let unchecked = Unchecked(neighbors, elems gh.Coords) inter ALL_COORDINATES in
+                        let unchecked = Unchecked(neighbors, elems gh.Coords) inter GLOBAL`ALL_COORDINATES in
                             if not unchecked = {} then 
                                 let c in set unchecked in c
                             else DefaultNextC(gh)
                 else DefaultNextC(gh)
 );
+
+end SearchGuesser

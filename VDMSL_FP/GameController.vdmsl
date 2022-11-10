@@ -1,32 +1,35 @@
+module GameController
+imports from GLOBAL all,
+        from Player all
+exports all
+definitions
+
 types
 GameController ::
-    attacker : Player
-    defender : Player
+    attacker : Player`Player
+    defender : Player`Player
     inv g == g.attacker <> g.defender;
 
 functions
-MakeGameController: Player * Player -> GameController
+MakeGameController: Player`Player * Player`Player -> GameController
 MakeGameController(p1, p2) == mk_GameController(p1, p2);
 
-Reset: Player * Player -> GameController
-Reset(p1, p2) == mk_GameController(ResetPlayer(p1), ResetPlayer(p2))
+Reset: Player`Player * Player`Player -> GameController
+Reset(p1, p2) == mk_GameController(Player`ResetPlayer(p1), Player`ResetPlayer(p2))
 post RESULT.attacker.Points = 0 and RESULT.defender.Points = 0;
 
-Start: GameController -> GameController
-Start(gc) == 
-    if gc.defender.Points < N_SHIPS then 
-        let mk_(a, d) = TakeTurn(gc.attacker, gc.defender) in
-            Start(mk_GameController(d, a))
+StartMeasure: GameController * seq of nat -> nat
+StartMeasure(gc, movesLeft) == 
+    let nGuesses = len gc.attacker.guessHist.Coords + len gc.defender.guessHist.Coords in
+        GLOBAL`MAX_TOTAL_GUESSES - nGuesses;
+
+Start: GameController * seq of nat -> GameController
+Start(gc, movesLeft) == 
+    if movesLeft = [] then gc
+        else if gc.defender.Points < GLOBAL`N_SHIPS then 
+            let mk_(a, d) = Player`TakeTurn(gc.attacker, gc.defender) in
+            Start(mk_GameController(d, a), tl movesLeft)
     else gc
 measure StartMeasure;
 
-StartMeasure: GameController -> nat
-StartMeasure(gc) == 
-    let nGuesses = len gc.attacker.guessHist.Coords + len gc.defender.guessHist.Coords in
-        MAX_TOTAL_GUESSES - nGuesses;
-
--- AnnounceWinner: Player -> seq of char
--- AnnounceWinner(p) == "The winner is " ^ p.Name ^ " with %s guesses!\r\n";
-
--- AnnounceScore: GameController -> seq of char * nat * seq of char * nat
--- AnnounceScore(gc) == mk_(gc.defender.Name, gc.defender.Points, gc.attacker.Name, gc.attacker.Points);
+end GameController

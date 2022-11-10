@@ -1,25 +1,34 @@
+module DefaultArranger
+imports from GLOBAL all,                              
+        from Grid all,
+        from Ship all
+exports all
+
+definitions
+
 functions
 
-DefaultArrange: () -> Grid
-DefaultArrange() == DefaultArrangeRec([], SHIPS_BY_LEN)
-post similarSeqs[nat]([s.Length | s in seq RESULT], SHIPS_BY_LEN);
+ArrangeRecMeasure: Grid`Grid * seq of nat -> nat
+ArrangeRecMeasure(g, s) == len s;
 
-
-DefaultArrangeRec: Grid * seq of nat -> Grid
-DefaultArrangeRec(g, s) == ( 
+ArrangeRec: Grid`Grid * seq of nat -> Grid`Grid
+ArrangeRec(g, s) == ( 
     if s = [] then g
     else let l = hd s, combinations = 
-                {mk_(d, c) | d in set {true, false}, -- Pattern matching is likely to be too complex for Isabelle translation
-                             c in set ALL_COORDINATES} in
+                {mk_(d, c) | d in set {true, false},
+                             c in set GLOBAL`ALL_COORDINATES} in
             let mk_(d, c) in set combinations be st
-            PlaceableShip(g, MakeShip(c, 
-                if d then mk_Coordinates(c.X+l-1,c.Y) else mk_Coordinates(c.X,c.Y+l-1))) in
-                    DefaultArrangeRec(PlaceShip(g, MakeShip(c, 
-                        if d then mk_Coordinates(c.X+l-1,c.Y) 
-                        else mk_Coordinates(c.X,c.Y+l-1))), tl s)
+            Grid`PlaceableShip(g, Ship`MakeShip(c, 
+                if d then mk_GLOBAL`Coordinates(c.X+l-1,c.Y) else mk_GLOBAL`Coordinates(c.X,c.Y+l-1))) in
+                    ArrangeRec(Grid`PlaceShip(g, Ship`MakeShip(c, 
+                        if d then mk_GLOBAL`Coordinates(c.X+l-1,c.Y) 
+                        else mk_GLOBAL`Coordinates(c.X,c.Y+l-1))), tl s)
 )
-measure DefaultArrangeRecMeasure;
+measure ArrangeRecMeasure;
+
+DefaultArrange: () -> Grid`Grid
+DefaultArrange() == ArrangeRec([], GLOBAL`SHIPS_BY_LEN)
+post len RESULT = len GLOBAL`SHIPS_BY_LEN;
 
 
-DefaultArrangeRecMeasure: Grid * seq of nat -> nat
-DefaultArrangeRecMeasure(g, s) == len s
+end DefaultArranger
