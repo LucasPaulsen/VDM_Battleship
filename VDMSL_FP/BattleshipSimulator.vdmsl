@@ -5,27 +5,7 @@ imports from GLOBAL all,
         from Player all,
         from GameController all
 exports all
-
 definitions
-
-types
-BattleShipGame ::
-    p1 : Player`Player
-    p2 : Player`Player
-    gc : GameController`GameController
-   	arng1 : ArrangingStrategy`ArngType
-   	arng2 : ArrangingStrategy`ArngType
-    gues1 : GuessingStrategy`GuesType
-    gues2 : GuessingStrategy`GuesType;
-
-GameResult ::
-    name : seq of char
-    p1name : seq of char
-    p1points : nat
-    p1nguess : nat
-    p2ame : seq of char
-    p2points : nat
-    p2nguess : nat
 
 values
 
@@ -33,41 +13,36 @@ MAX_GUESSES_SEQ : seq of nat = [1 | x in set {1,...,GLOBAL`MAX_TOTAL_GUESSES}]
     
 functions
 
-GC2GameResult: seq of char * GameController`GameController -> GameResult
-GC2GameResult(game, gc) == mk_GameResult(game, 
-    gc.attacker.Name, gc.attacker.Points, card elems gc.attacker.guessHist.Coords,
-    gc.defender.Name, gc.defender.Points, card elems gc.defender.guessHist.Coords);
-
-DefaultGame : () -> GameResult
+DefaultGame : () -> seq of char
 DefaultGame() == (
     let p1 = Player`MakePlayer("P1_DefaultDefault", "DefaultArranger", "DefaultGuesser"),
         p2 = Player`MakePlayer("P2_DefaultDefault", "DefaultArranger", "DefaultGuesser") in
     let gc = GameController`MakeGameController(Player`ArrangeShips(p1), Player`ArrangeShips(p2)) in
-    GC2GameResult("DefaultGame", GameController`Start(gc, MAX_GUESSES_SEQ))
+    GameController`Start(gc, MAX_GUESSES_SEQ)
 );
 
-DefaultVsSearchWDefaultGame: () -> GameResult
+DefaultVsSearchWDefaultGame: () -> seq of char
 DefaultVsSearchWDefaultGame() == (
     let p1 = Player`MakePlayer("P1_DefaultDefault", "DefaultArranger", "DefaultGuesser") in
     let p2 = Player`MakePlayer("P2_DefaultSearch", "DefaultArranger", "SearchGuesser") in
     let gc = GameController`MakeGameController(Player`ArrangeShips(p1), Player`ArrangeShips(p2)) in
-    GC2GameResult("DefaultVsSearchWDefaultGame", GameController`Start(gc, MAX_GUESSES_SEQ))
+    GameController`Start(gc, MAX_GUESSES_SEQ)
 );
 
-DefaultVsSearchWDummyGame : () -> GameResult
+DefaultVsSearchWDummyGame : () -> seq of char
 DefaultVsSearchWDummyGame() == (
     let p1 = Player`MakePlayer("P1_DummyDefault", "DummyArranger", "DefaultGuesser") in
     let p2 = Player`MakePlayer("P2_DummySearch", "DummyArranger", "SearchGuesser") in
     let gc = GameController`MakeGameController(Player`ArrangeShips(p1), Player`ArrangeShips(p2)) in
-    GC2GameResult("DefaultVsSearchWDummyGame", GameController`Start(gc, MAX_GUESSES_SEQ))
+    GameController`Start(gc, MAX_GUESSES_SEQ)
 );
 
-DefaultWDummyGame : () -> GameResult
+DefaultWDummyGame : () -> seq of char
 DefaultWDummyGame() == (
     let p1 = Player`MakePlayer("P1_DummyDefault", "DummyArranger", "DefaultGuesser") in
     let p2 = Player`MakePlayer("P2_DummyDefault", "DummyArranger", "DefaultGuesser") in
     let gc = GameController`MakeGameController(Player`ArrangeShips(p1), Player`ArrangeShips(p2)) in
-    GC2GameResult("DefaultWDummyGame", GameController`Start(gc, MAX_GUESSES_SEQ))
+    GameController`Start(gc, MAX_GUESSES_SEQ)
 );
 
 

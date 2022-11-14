@@ -4,16 +4,14 @@ imports from GLOBAL all,
 exports all
 definitions
 
--- values
--- GRID_MAX_SHIPS = GLOBAL`N_SHIPS
-
 types 
 
 ShipT = Ship`Ship;
 
 Grid = seq of ShipT
---inv g == len g <= GRID_MAX_SHIPS
--- and forall s in set elems g & elems s.Coords subset GLOBAL`ALL_COORDINATES
+inv g == len g <= GLOBAL`N_SHIPS and 
+         forall s1, s2 in set elems g & s1 <> s2
+         => elems s1.Coords inter elems s2.Coords = {};
 
 functions
 PlaceableShip: Grid * ShipT -> bool

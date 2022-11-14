@@ -42,9 +42,13 @@ SeqReplaceAt(s, e, i) == let s1 = [s(x) | x in set inds s & x < i],
                              s2 = [s(x) | x in set inds s & x > i] 
                              in s1 ^ [e] ^ s2;
 
-test: seq of nat * nat * nat1 -> seq of nat
-test(s, e, i) == SeqReplaceAt[nat](s, e, i)
--- value "test [1, 2, 3, 4] 2 3" shows it works
+SeqNOccurs[@T]: (seq of @T) * @T -> nat
+SeqNOccurs(s, e) == if s = [] then 0
+                       else if hd s = e then 1 + SeqNOccurs[@T](tl s, e)
+                       else SeqNOccurs[@T](tl s, e);
+
+SimilarSeqs[@T]: (seq of @T) * (seq of @T) -> bool
+SimilarSeqs(s1, s2) == len s1 = len s2 and forall e in set elems s1 & SeqNOccurs[@T](s1, e) = SeqNOccurs[@T](s2, e);
 
 
 end GLOBAL

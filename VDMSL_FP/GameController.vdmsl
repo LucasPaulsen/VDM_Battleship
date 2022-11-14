@@ -4,11 +4,14 @@ imports from GLOBAL all,
 exports all
 definitions
 
+values 
+    NAT_STR = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+
 types
 GameController ::
-    attacker : Player`Player
-    defender : Player`Player
-    inv g == g.attacker <> g.defender;
+    Attacker : Player`Player
+    Defender : Player`Player
+    inv g == g.Attacker <> g.Defender;
 
 functions
 MakeGameController: Player`Player * Player`Player -> GameController
@@ -16,20 +19,40 @@ MakeGameController(p1, p2) == mk_GameController(p1, p2);
 
 Reset: Player`Player * Player`Player -> GameController
 Reset(p1, p2) == mk_GameController(Player`ResetPlayer(p1), Player`ResetPlayer(p2))
-post RESULT.attacker.Points = 0 and RESULT.defender.Points = 0;
+post RESULT.Attacker.Points = 0 and RESULT.Defender.Points = 0;
+
+nat2strRec: nat * seq of char -> seq of char
+nat2strRec(n, acc) == if n < 10 then NAT_STR(n+1) ^ acc
+                      else nat2strRec(n div 10, NAT_STR((n mod 10)+1) ^ acc)
+measure n;
+
+nat2str: nat -> seq of char
+nat2str(n) == nat2strRec(n, []);
+
+AnnounceWinner: Player`Player -> seq of char
+AnnounceWinner(p) == 
+    "The winner is " ^ p.Name ^ " with " ^ nat2str(len p.GuessHist.Coords) ^ " guesses!\r\n";
+
+AnnounceScore: Player`Player * Player`Player -> seq of char
+AnnounceScore(p1, p2) == 
+    "Score: " ^ p1.Name ^ " " ^ nat2str(p1.Points) ^ " - " ^ nat2str(p2.Points) ^ " " ^ p2.Name ^ "\r\n";
+
+GameOver: GameController -> seq of char
+GameOver(gc) == let w = gc.Defender, l = gc.Attacker in
+                    AnnounceWinner(w) ^ AnnounceScore(w, l);
 
 StartMeasure: GameController * seq of nat -> nat
 StartMeasure(gc, movesLeft) == 
-    let nGuesses = len gc.attacker.guessHist.Coords + len gc.defender.guessHist.Coords in
+    let nGuesses = len gc.Attacker.GuessHist.Coords + len gc.Defender.GuessHist.Coords in
         GLOBAL`MAX_TOTAL_GUESSES - nGuesses;
 
-Start: GameController * seq of nat -> GameController
+Start: GameController * seq of nat -> seq of char
 Start(gc, movesLeft) == 
-    if movesLeft = [] then gc
-        else if gc.defender.Points < GLOBAL`N_SHIPS then 
-            let mk_(a, d) = Player`TakeTurn(gc.attacker, gc.defender) in
+    if movesLeft = [] then GameOver(gc)
+        else if gc.Defender.Points < GLOBAL`N_SHIPS then 
+            let mk_(a, d) = Player`TakeTurn(gc.Attacker, gc.Defender) in
             Start(mk_GameController(d, a), tl movesLeft)
-    else gc
+    else GameOver(gc)
 measure StartMeasure;
 
 end GameController

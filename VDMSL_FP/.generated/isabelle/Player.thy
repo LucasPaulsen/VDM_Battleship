@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2022-11-10T14:49:07.781Z
+(* VDM to Isabelle Translation @2022-11-14T10:32:19.106Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in 'c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Player.vdmsl' at line 1:8
@@ -9,7 +9,7 @@ imports "ArrangingStrategy" "GLOBAL" "Grid" "GuessingStrategy" "VDMToolkit"
 begin
 
 
-\<comment>\<open>VDM source: Player = compose Player of Name:seq of (char), Points:nat, PGrid:Grid, guessHist:GuessHistory, arngStrat:ArngType, guesStrat:GuesType end
+\<comment>\<open>VDM source: Player = compose Player of Name:seq of (char), Points:nat, PGrid:Grid, GuessHist:GuessHistory, ArngStrat:ArngType, GuesStrat:GuesType end
 	inv p == ((p.Points) <= N_SHIPS)\<close>
 \<comment>\<open>in 'Player' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Player.vdmsl) at line 11:1\<close>
 record Player =  Name\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r :: "VDMChar VDMSeq"
@@ -18,11 +18,11 @@ record Player =  Name\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r :: "VDMCha
 		 
 		 PGrid\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r :: "Grid"
 		 
-		 guessHist\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r :: "GuessHistory"
+		 GuessHist\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r :: "GuessHistory"
 		 
-		 arngStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r :: "ArngType"
+		 ArngStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r :: "ArngType"
 		 
-		 guesStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r :: "GuesType" 
+		 GuesStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r :: "GuesType" 
 
 \<comment>\<open>VDM source: inv_Player: (Player +> bool)
 	inv_Player(p) ==
@@ -36,9 +36,9 @@ where
 		( (((inv_VDMSeq' (inv_VDMChar) (Name\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p))) \<and> 
 		 ((inv_VDMNat (Points\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p))) \<and> 
 		 ((inv_Grid (PGrid\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p))) \<and> 
-		 (inv_GuessHistory (guessHist\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p)) \<and> 
-		 ((inv_ArngType (arngStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p))) \<and> 
-		 ((inv_GuesType (guesStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p))) ))  \<and> 
+		 (inv_GuessHistory (GuessHist\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p)) \<and> 
+		 ((inv_ArngType (ArngStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p))) \<and> 
+		 ((inv_GuesType (GuesStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p))) ))  \<and> 
 		\<comment>\<open>User defined body of inv_Player.\<close>
 		((Points\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p) \<le> GLOBAL.N_SHIPS)"
  
@@ -80,13 +80,13 @@ definition
 where
 	"MakePlayer s   a   g \<equiv> 
 	\<comment>\<open>User defined body of MakePlayer.\<close>
-	\<lparr>Name\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = s, Points\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = (0::VDMNat), PGrid\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = [], guessHist\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = \<lparr>Coords\<^sub>G\<^sub>u\<^sub>e\<^sub>s\<^sub>s\<^sub>H\<^sub>i\<^sub>s\<^sub>t\<^sub>o\<^sub>r\<^sub>y = [], Results\<^sub>G\<^sub>u\<^sub>e\<^sub>s\<^sub>s\<^sub>H\<^sub>i\<^sub>s\<^sub>t\<^sub>o\<^sub>r\<^sub>y = []\<rparr>, arngStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = a, guesStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = g\<rparr>"
+	\<lparr>Name\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = s, Points\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = (0::VDMNat), PGrid\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = [], GuessHist\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = \<lparr>Coords\<^sub>G\<^sub>u\<^sub>e\<^sub>s\<^sub>s\<^sub>H\<^sub>i\<^sub>s\<^sub>t\<^sub>o\<^sub>r\<^sub>y = [], Results\<^sub>G\<^sub>u\<^sub>e\<^sub>s\<^sub>s\<^sub>H\<^sub>i\<^sub>s\<^sub>t\<^sub>o\<^sub>r\<^sub>y = []\<rparr>, ArngStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = a, GuesStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = g\<rparr>"
 
 	
 	
 \<comment>\<open>VDM source: ResetPlayer: (Player -> Player)
 	ResetPlayer(p) ==
-MakePlayer((p.Name), (p.arngStrat), (p.guesStrat))\<close>
+MakePlayer((p.Name), (p.ArngStrat), (p.GuesStrat))\<close>
 \<comment>\<open>in 'Player' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Player.vdmsl) at line 25:1\<close>
 
 \<comment>\<open>VDM source: pre_ResetPlayer: (Player +> bool)
@@ -117,13 +117,13 @@ definition
 where
 	"ResetPlayer p \<equiv> 
 	\<comment>\<open>User defined body of ResetPlayer.\<close>
-	(MakePlayer (Name\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p)  (arngStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p)  (guesStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p))"
+	(MakePlayer (Name\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p)  (ArngStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p)  (GuesStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p))"
 
 	
 	
 \<comment>\<open>VDM source: ArrangeShips: (Player -> Player)
 	ArrangeShips(p) ==
-mk_Player((p.Name), (p.Points), Arrange((p.arngStrat)), (p.guessHist), (p.arngStrat), (p.guesStrat))\<close>
+mk_Player((p.Name), (p.Points), Arrange((p.ArngStrat)), (p.GuessHist), (p.ArngStrat), (p.GuesStrat))\<close>
 \<comment>\<open>in 'Player' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Player.vdmsl) at line 28:1\<close>
 
 \<comment>\<open>VDM source: pre_ArrangeShips: (Player +> bool)
@@ -154,13 +154,13 @@ definition
 where
 	"ArrangeShips p \<equiv> 
 	\<comment>\<open>User defined body of ArrangeShips.\<close>
-	\<lparr>Name\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = (Name\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p), Points\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = (Points\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p), PGrid\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = (ArrangingStrategy.Arrange (arngStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p)), guessHist\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = (guessHist\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p), arngStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = (arngStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p), guesStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = (guesStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p)\<rparr>"
+	\<lparr>Name\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = (Name\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p), Points\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = (Points\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p), PGrid\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = (ArrangingStrategy.Arrange (ArngStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p)), GuessHist\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = (GuessHist\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p), ArngStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = (ArngStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p), GuesStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = (GuesStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p)\<rparr>"
 
 	
 	
 \<comment>\<open>VDM source: ReceiveGuess: (Player * Coordinates -> (Player * GuessResult))
 	ReceiveGuess(p, c) ==
-let gr:(Grid * GuessResult) = Hit((p.PGrid), c) in mk_(mk_Player((p.Name), (p.Points), (gr.#1), (p.guessHist), (p.arngStrat), (p.guesStrat)), (gr.#2))\<close>
+let gr:(Grid * GuessResult) = Hit((p.PGrid), c) in mk_(mk_Player((p.Name), (p.Points), (gr.#1), (p.GuessHist), (p.ArngStrat), (p.GuesStrat)), (gr.#2))\<close>
 \<comment>\<open>in 'Player' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Player.vdmsl) at line 31:1\<close>
 
 \<comment>\<open>VDM source: pre_ReceiveGuess: (Player * Coordinates +> bool)
@@ -204,7 +204,7 @@ where
 		  (((inv_bool (Hit\<^sub>G\<^sub>u\<^sub>e\<^sub>s\<^sub>s\<^sub>R\<^sub>e\<^sub>s\<^sub>u\<^sub>l\<^sub>t (snd gr)))) \<and> 
 		 ((inv_bool (Sunk\<^sub>G\<^sub>u\<^sub>e\<^sub>s\<^sub>s\<^sub>R\<^sub>e\<^sub>s\<^sub>u\<^sub>l\<^sub>t (snd gr)))) )
 		)) then
-			(\<lparr>Name\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = (Name\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p), Points\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = (Points\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p), PGrid\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = (fst (gr)), guessHist\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = (guessHist\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p), arngStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = (arngStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p), guesStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = (guesStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p)\<rparr> , (snd (gr)))
+			(\<lparr>Name\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = (Name\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p), Points\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = (Points\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p), PGrid\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = (fst (gr)), GuessHist\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = (GuessHist\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p), ArngStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = (ArngStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p), GuesStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = (GuesStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p)\<rparr> , (snd (gr)))
 		 else
 			undefined
 		)
@@ -214,10 +214,10 @@ where
 	
 \<comment>\<open>VDM source: TakeTurn: (Player * Player -> (Player * Player))
 	TakeTurn(p1, p2) ==
-let c:Coordinates = Guess((p1.guesStrat), (p1.guessHist)) in let gr:(Player * GuessResult) = ReceiveGuess(p2, c) in mk_(mk_Player((p1.Name), (if ((gr.#2).Sunk)
+let c:Coordinates = Guess((p1.GuesStrat), (p1.GuessHist)) in let gr:(Player * GuessResult) = ReceiveGuess(p2, c) in mk_(mk_Player((p1.Name), (if ((gr.#2).Sunk)
 then ((p1.Points) + 1)
-else (p1.Points)), (p1.PGrid), mk_GLOBAL`GuessHistory(([c] ^ ((p1.guessHist).Coords)), ([(gr.#2)] ^ ((p1.guessHist).Results))), (p1.arngStrat), (p1.guesStrat)), (gr.#1))
-	post ((len (((RESULT.#1).guessHist).Coords)) = ((len ((p1.guessHist).Coords)) + 1))\<close>
+else (p1.Points)), (p1.PGrid), mk_GLOBAL`GuessHistory(([c] ^ ((p1.GuessHist).Coords)), ([(gr.#2)] ^ ((p1.GuessHist).Results))), (p1.ArngStrat), (p1.GuesStrat)), (gr.#1))
+	post ((len (((RESULT.#1).GuessHist).Coords)) = ((len ((p1.GuessHist).Coords)) + 1))\<close>
 \<comment>\<open>in 'Player' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Player.vdmsl) at line 36:1\<close>
 
 \<comment>\<open>VDM source: pre_TakeTurn: (Player * Player +> bool)
@@ -234,7 +234,7 @@ where
 
 \<comment>\<open>VDM source: post_TakeTurn: (Player * Player * (Player * Player) +> bool)
 	post_TakeTurn(p1, p2, RESULT) ==
-((len (((RESULT.#1).guessHist).Coords)) = ((len ((p1.guessHist).Coords)) + 1))\<close>
+((len (((RESULT.#1).GuessHist).Coords)) = ((len ((p1.GuessHist).Coords)) + 1))\<close>
 \<comment>\<open>in 'Player' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Player.vdmsl) at line 49:37\<close>
 definition
 	post_TakeTurn :: "Player \<Rightarrow> Player \<Rightarrow> (Player \<times> Player) \<Rightarrow> bool"
@@ -246,7 +246,7 @@ where
 		 inv_Player (snd RESULT)
 		)))  \<and> 
 		\<comment>\<open>User defined body of post_TakeTurn.\<close>
-		((len (Coords\<^sub>G\<^sub>u\<^sub>e\<^sub>s\<^sub>s\<^sub>H\<^sub>i\<^sub>s\<^sub>t\<^sub>o\<^sub>r\<^sub>y (guessHist\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r (fst (RESULT))))) = ((len (Coords\<^sub>G\<^sub>u\<^sub>e\<^sub>s\<^sub>s\<^sub>H\<^sub>i\<^sub>s\<^sub>t\<^sub>o\<^sub>r\<^sub>y (guessHist\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p1))) + (1::VDMNat1)))"
+		((len (Coords\<^sub>G\<^sub>u\<^sub>e\<^sub>s\<^sub>s\<^sub>H\<^sub>i\<^sub>s\<^sub>t\<^sub>o\<^sub>r\<^sub>y (GuessHist\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r (fst (RESULT))))) = ((len (Coords\<^sub>G\<^sub>u\<^sub>e\<^sub>s\<^sub>s\<^sub>H\<^sub>i\<^sub>s\<^sub>t\<^sub>o\<^sub>r\<^sub>y (GuessHist\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p1))) + (1::VDMNat1)))"
 
 definition
 	TakeTurn :: "Player \<Rightarrow> Player \<Rightarrow> (Player \<times> Player)"
@@ -255,7 +255,7 @@ where
 	\<comment>\<open>User defined body of TakeTurn.\<close>
 	(
 		let 
-(c::Coordinates) = (GuessingStrategy.Guess (guesStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p1)  (guessHist\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p1))
+(c::Coordinates) = (GuessingStrategy.Guess (GuesStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p1)  (GuessHist\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p1))
 		in
 			
 			(if (inv_Coordinates  c) then
@@ -268,14 +268,14 @@ where
 		( (((inv_VDMSeq' (inv_VDMChar) (Name\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r (fst gr)))) \<and> 
 		 ((inv_VDMNat (Points\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r (fst gr)))) \<and> 
 		 (((inv_VDMSeq' inv_Ship (PGrid\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r (fst gr))))) \<and> 
-		 ( (((inv_VDMSeq' inv_Coordinates  (Coords\<^sub>G\<^sub>u\<^sub>e\<^sub>s\<^sub>s\<^sub>H\<^sub>i\<^sub>s\<^sub>t\<^sub>o\<^sub>r\<^sub>y (guessHist\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r (fst gr))))) \<and> 
-		 ((inv_VDMSeq' inv_GuessResult  (Results\<^sub>G\<^sub>u\<^sub>e\<^sub>s\<^sub>s\<^sub>H\<^sub>i\<^sub>s\<^sub>t\<^sub>o\<^sub>r\<^sub>y (guessHist\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r (fst gr))))) )) \<and> 
-		 (((inv_VDMSeq' (inv_VDMChar) (arngStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r (fst gr))))) \<and> 
-		 (((inv_VDMSeq' (inv_VDMChar) (guesStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r (fst gr))))) )\<and>
+		 ( (((inv_VDMSeq' inv_Coordinates  (Coords\<^sub>G\<^sub>u\<^sub>e\<^sub>s\<^sub>s\<^sub>H\<^sub>i\<^sub>s\<^sub>t\<^sub>o\<^sub>r\<^sub>y (GuessHist\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r (fst gr))))) \<and> 
+		 ((inv_VDMSeq' inv_GuessResult  (Results\<^sub>G\<^sub>u\<^sub>e\<^sub>s\<^sub>s\<^sub>H\<^sub>i\<^sub>s\<^sub>t\<^sub>o\<^sub>r\<^sub>y (GuessHist\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r (fst gr))))) )) \<and> 
+		 (((inv_VDMSeq' (inv_VDMChar) (ArngStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r (fst gr))))) \<and> 
+		 (((inv_VDMSeq' (inv_VDMChar) (GuesStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r (fst gr))))) )\<and>
 		  (((inv_bool (Hit\<^sub>G\<^sub>u\<^sub>e\<^sub>s\<^sub>s\<^sub>R\<^sub>e\<^sub>s\<^sub>u\<^sub>l\<^sub>t (snd gr)))) \<and> 
 		 ((inv_bool (Sunk\<^sub>G\<^sub>u\<^sub>e\<^sub>s\<^sub>s\<^sub>R\<^sub>e\<^sub>s\<^sub>u\<^sub>l\<^sub>t (snd gr)))) )
 		)) then
-			(\<lparr>Name\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = (Name\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p1), Points\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = ( if ((Sunk\<^sub>G\<^sub>u\<^sub>e\<^sub>s\<^sub>s\<^sub>R\<^sub>e\<^sub>s\<^sub>u\<^sub>l\<^sub>t (snd (gr)))) then (((Points\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p1) + (1::VDMNat1))) else ((Points\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p1))), PGrid\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = (PGrid\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p1), guessHist\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = \<lparr>Coords\<^sub>G\<^sub>u\<^sub>e\<^sub>s\<^sub>s\<^sub>H\<^sub>i\<^sub>s\<^sub>t\<^sub>o\<^sub>r\<^sub>y = ([c] @ (Coords\<^sub>G\<^sub>u\<^sub>e\<^sub>s\<^sub>s\<^sub>H\<^sub>i\<^sub>s\<^sub>t\<^sub>o\<^sub>r\<^sub>y (guessHist\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p1))), Results\<^sub>G\<^sub>u\<^sub>e\<^sub>s\<^sub>s\<^sub>H\<^sub>i\<^sub>s\<^sub>t\<^sub>o\<^sub>r\<^sub>y = ([(snd (gr))] @ (Results\<^sub>G\<^sub>u\<^sub>e\<^sub>s\<^sub>s\<^sub>H\<^sub>i\<^sub>s\<^sub>t\<^sub>o\<^sub>r\<^sub>y (guessHist\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p1)))\<rparr>, arngStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = (arngStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p1), guesStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = (guesStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p1)\<rparr> , (fst (gr)))
+			(\<lparr>Name\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = (Name\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p1), Points\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = ( if ((Sunk\<^sub>G\<^sub>u\<^sub>e\<^sub>s\<^sub>s\<^sub>R\<^sub>e\<^sub>s\<^sub>u\<^sub>l\<^sub>t (snd (gr)))) then (((Points\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p1) + (1::VDMNat1))) else ((Points\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p1))), PGrid\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = (PGrid\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p1), GuessHist\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = \<lparr>Coords\<^sub>G\<^sub>u\<^sub>e\<^sub>s\<^sub>s\<^sub>H\<^sub>i\<^sub>s\<^sub>t\<^sub>o\<^sub>r\<^sub>y = ([c] @ (Coords\<^sub>G\<^sub>u\<^sub>e\<^sub>s\<^sub>s\<^sub>H\<^sub>i\<^sub>s\<^sub>t\<^sub>o\<^sub>r\<^sub>y (GuessHist\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p1))), Results\<^sub>G\<^sub>u\<^sub>e\<^sub>s\<^sub>s\<^sub>H\<^sub>i\<^sub>s\<^sub>t\<^sub>o\<^sub>r\<^sub>y = ([(snd (gr))] @ (Results\<^sub>G\<^sub>u\<^sub>e\<^sub>s\<^sub>s\<^sub>H\<^sub>i\<^sub>s\<^sub>t\<^sub>o\<^sub>r\<^sub>y (GuessHist\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p1)))\<rparr>, ArngStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = (ArngStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p1), GuesStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r = (GuesStrat\<^sub>P\<^sub>l\<^sub>a\<^sub>y\<^sub>e\<^sub>r p1)\<rparr> , (fst (gr)))
 		 else
 			undefined
 		)

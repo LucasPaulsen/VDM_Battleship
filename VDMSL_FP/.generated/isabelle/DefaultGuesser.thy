@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2022-11-10T14:49:07.733Z
+(* VDM to Isabelle Translation @2022-11-14T10:32:19.059Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in 'c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\DefaultGuesser.vdmsl' at line 1:8

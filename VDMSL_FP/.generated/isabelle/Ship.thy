@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2022-11-10T14:49:07.793Z
+(* VDM to Isabelle Translation @2022-11-14T10:32:19.119Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in 'c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Ship.vdmsl' at line 1:8
@@ -10,7 +10,7 @@ begin
 
 
 \<comment>\<open>VDM source: Ship = compose Ship of Coords:seq1 of (Coordinates), Hit:seq1 of (bool), Length:nat end
-	inv s == (((len (s.Coords)) = (card (elems (s.Coords)))) and (((len (s.Coords)) = (len (s.Hit))) and (forall c1, c2 in set (elems (s.Coords)) & ((((c1.X) = (c2.X)) and (((c1.Y) < (c2.Y)) => ({(c1.Y), ... ,(c2.Y)} subset Ycoords((elems (s.Coords)))))) or (((c1.Y) = (c2.Y)) and (((c1.X) < (c2.X)) => ({(c1.X), ... ,(c2.X)} subset Xcoords((elems (s.Coords))))))))))\<close>
+	inv s == (((len (s.Coords)) = (card (elems (s.Coords)))) and (((len (s.Coords)) = (len (s.Hit))) and (((elems (s.Coords)) subset ALL_COORDINATES) and (forall c1, c2 in set (elems (s.Coords)) & ((((c1.X) = (c2.X)) and (((c1.Y) < (c2.Y)) => ({(c1.Y), ... ,(c2.Y)} subset Ycoords((elems (s.Coords)))))) or (((c1.Y) = (c2.Y)) and (((c1.X) < (c2.X)) => ({(c1.X), ... ,(c2.X)} subset Xcoords((elems (s.Coords)))))))))))\<close>
 \<comment>\<open>in 'Ship' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Ship.vdmsl) at line 7:1\<close>
 record Ship =  Coords\<^sub>S\<^sub>h\<^sub>i\<^sub>p :: "Coordinates VDMSeq1"
 		 
@@ -20,7 +20,7 @@ record Ship =  Coords\<^sub>S\<^sub>h\<^sub>i\<^sub>p :: "Coordinates VDMSeq1"
 
 \<comment>\<open>VDM source: inv_Ship: (Ship +> bool)
 	inv_Ship(s) ==
-(((len (s.Coords)) = (card (elems (s.Coords)))) and (((len (s.Coords)) = (len (s.Hit))) and (forall c1, c2 in set (elems (s.Coords)) & ((((c1.X) = (c2.X)) and (((c1.Y) < (c2.Y)) => ({(c1.Y), ... ,(c2.Y)} subset Ycoords((elems (s.Coords)))))) or (((c1.Y) = (c2.Y)) and (((c1.X) < (c2.X)) => ({(c1.X), ... ,(c2.X)} subset Xcoords((elems (s.Coords))))))))))\<close>
+(((len (s.Coords)) = (card (elems (s.Coords)))) and (((len (s.Coords)) = (len (s.Hit))) and (((elems (s.Coords)) subset ALL_COORDINATES) and (forall c1, c2 in set (elems (s.Coords)) & ((((c1.X) = (c2.X)) and (((c1.Y) < (c2.Y)) => ({(c1.Y), ... ,(c2.Y)} subset Ycoords((elems (s.Coords)))))) or (((c1.Y) = (c2.Y)) and (((c1.X) < (c2.X)) => ({(c1.X), ... ,(c2.X)} subset Xcoords((elems (s.Coords)))))))))))\<close>
 \<comment>\<open>in 'Ship' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Ship.vdmsl) at line 12:5\<close>
 definition
 	inv_Ship :: "Ship \<Rightarrow> bool"
@@ -31,7 +31,7 @@ where
 		 ((inv_VDMSeq1' (inv_bool) (Hit\<^sub>S\<^sub>h\<^sub>i\<^sub>p s))) \<and> 
 		 ((inv_VDMNat (Length\<^sub>S\<^sub>h\<^sub>i\<^sub>p s))) ))  \<and> 
 		\<comment>\<open>User defined body of inv_Ship.\<close>
-		(((len (Coords\<^sub>S\<^sub>h\<^sub>i\<^sub>p s)) = (vdm_card (elems (Coords\<^sub>S\<^sub>h\<^sub>i\<^sub>p s)))) \<and> (((len (Coords\<^sub>S\<^sub>h\<^sub>i\<^sub>p s)) = (len (Hit\<^sub>S\<^sub>h\<^sub>i\<^sub>p s))) \<and> (\<forall> c1 \<in> (elems (Coords\<^sub>S\<^sub>h\<^sub>i\<^sub>p s))  . (\<forall> c2 \<in> (elems (Coords\<^sub>S\<^sub>h\<^sub>i\<^sub>p s))  . ((((X\<^sub>C\<^sub>o\<^sub>o\<^sub>r\<^sub>d\<^sub>i\<^sub>n\<^sub>a\<^sub>t\<^sub>e\<^sub>s c1) = (X\<^sub>C\<^sub>o\<^sub>o\<^sub>r\<^sub>d\<^sub>i\<^sub>n\<^sub>a\<^sub>t\<^sub>e\<^sub>s c2)) \<and> (((Y\<^sub>C\<^sub>o\<^sub>o\<^sub>r\<^sub>d\<^sub>i\<^sub>n\<^sub>a\<^sub>t\<^sub>e\<^sub>s c1) < (Y\<^sub>C\<^sub>o\<^sub>o\<^sub>r\<^sub>d\<^sub>i\<^sub>n\<^sub>a\<^sub>t\<^sub>e\<^sub>s c2)) \<longrightarrow> ({(Y\<^sub>C\<^sub>o\<^sub>o\<^sub>r\<^sub>d\<^sub>i\<^sub>n\<^sub>a\<^sub>t\<^sub>e\<^sub>s c1)..(Y\<^sub>C\<^sub>o\<^sub>o\<^sub>r\<^sub>d\<^sub>i\<^sub>n\<^sub>a\<^sub>t\<^sub>e\<^sub>s c2)} \<subseteq> (GLOBAL.Ycoords (elems (Coords\<^sub>S\<^sub>h\<^sub>i\<^sub>p s)))))) \<or> (((Y\<^sub>C\<^sub>o\<^sub>o\<^sub>r\<^sub>d\<^sub>i\<^sub>n\<^sub>a\<^sub>t\<^sub>e\<^sub>s c1) = (Y\<^sub>C\<^sub>o\<^sub>o\<^sub>r\<^sub>d\<^sub>i\<^sub>n\<^sub>a\<^sub>t\<^sub>e\<^sub>s c2)) \<and> (((X\<^sub>C\<^sub>o\<^sub>o\<^sub>r\<^sub>d\<^sub>i\<^sub>n\<^sub>a\<^sub>t\<^sub>e\<^sub>s c1) < (X\<^sub>C\<^sub>o\<^sub>o\<^sub>r\<^sub>d\<^sub>i\<^sub>n\<^sub>a\<^sub>t\<^sub>e\<^sub>s c2)) \<longrightarrow> ({(X\<^sub>C\<^sub>o\<^sub>o\<^sub>r\<^sub>d\<^sub>i\<^sub>n\<^sub>a\<^sub>t\<^sub>e\<^sub>s c1)..(X\<^sub>C\<^sub>o\<^sub>o\<^sub>r\<^sub>d\<^sub>i\<^sub>n\<^sub>a\<^sub>t\<^sub>e\<^sub>s c2)} \<subseteq> (GLOBAL.Xcoords (elems (Coords\<^sub>S\<^sub>h\<^sub>i\<^sub>p s)))))))))))"
+		(((len (Coords\<^sub>S\<^sub>h\<^sub>i\<^sub>p s)) = (vdm_card (elems (Coords\<^sub>S\<^sub>h\<^sub>i\<^sub>p s)))) \<and> (((len (Coords\<^sub>S\<^sub>h\<^sub>i\<^sub>p s)) = (len (Hit\<^sub>S\<^sub>h\<^sub>i\<^sub>p s))) \<and> (((elems (Coords\<^sub>S\<^sub>h\<^sub>i\<^sub>p s)) \<subseteq> GLOBAL.ALL_COORDINATES) \<and> (\<forall> c1 \<in> (elems (Coords\<^sub>S\<^sub>h\<^sub>i\<^sub>p s))  . (\<forall> c2 \<in> (elems (Coords\<^sub>S\<^sub>h\<^sub>i\<^sub>p s))  . ((((X\<^sub>C\<^sub>o\<^sub>o\<^sub>r\<^sub>d\<^sub>i\<^sub>n\<^sub>a\<^sub>t\<^sub>e\<^sub>s c1) = (X\<^sub>C\<^sub>o\<^sub>o\<^sub>r\<^sub>d\<^sub>i\<^sub>n\<^sub>a\<^sub>t\<^sub>e\<^sub>s c2)) \<and> (((Y\<^sub>C\<^sub>o\<^sub>o\<^sub>r\<^sub>d\<^sub>i\<^sub>n\<^sub>a\<^sub>t\<^sub>e\<^sub>s c1) < (Y\<^sub>C\<^sub>o\<^sub>o\<^sub>r\<^sub>d\<^sub>i\<^sub>n\<^sub>a\<^sub>t\<^sub>e\<^sub>s c2)) \<longrightarrow> ({(Y\<^sub>C\<^sub>o\<^sub>o\<^sub>r\<^sub>d\<^sub>i\<^sub>n\<^sub>a\<^sub>t\<^sub>e\<^sub>s c1)..(Y\<^sub>C\<^sub>o\<^sub>o\<^sub>r\<^sub>d\<^sub>i\<^sub>n\<^sub>a\<^sub>t\<^sub>e\<^sub>s c2)} \<subseteq> (GLOBAL.Ycoords (elems (Coords\<^sub>S\<^sub>h\<^sub>i\<^sub>p s)))))) \<or> (((Y\<^sub>C\<^sub>o\<^sub>o\<^sub>r\<^sub>d\<^sub>i\<^sub>n\<^sub>a\<^sub>t\<^sub>e\<^sub>s c1) = (Y\<^sub>C\<^sub>o\<^sub>o\<^sub>r\<^sub>d\<^sub>i\<^sub>n\<^sub>a\<^sub>t\<^sub>e\<^sub>s c2)) \<and> (((X\<^sub>C\<^sub>o\<^sub>o\<^sub>r\<^sub>d\<^sub>i\<^sub>n\<^sub>a\<^sub>t\<^sub>e\<^sub>s c1) < (X\<^sub>C\<^sub>o\<^sub>o\<^sub>r\<^sub>d\<^sub>i\<^sub>n\<^sub>a\<^sub>t\<^sub>e\<^sub>s c2)) \<longrightarrow> ({(X\<^sub>C\<^sub>o\<^sub>o\<^sub>r\<^sub>d\<^sub>i\<^sub>n\<^sub>a\<^sub>t\<^sub>e\<^sub>s c1)..(X\<^sub>C\<^sub>o\<^sub>o\<^sub>r\<^sub>d\<^sub>i\<^sub>n\<^sub>a\<^sub>t\<^sub>e\<^sub>s c2)} \<subseteq> (GLOBAL.Xcoords (elems (Coords\<^sub>S\<^sub>h\<^sub>i\<^sub>p s))))))))))))"
  
 lemmas inv_Ship_defs = inv_Coordinates_def inv_Ship_def inv_VDMNat_def inv_VDMSeq1'_def inv_VDMSeq1'_defs inv_bool_def 
 
@@ -44,12 +44,12 @@ lemmas inv_Ship_defs = inv_Coordinates_def inv_Ship_def inv_VDMNat_def inv_VDMSe
 then mk_Ship([mk_GLOBAL`Coordinates((cStart.X), Y) | Y in set {(cStart.Y), ... ,(cEnd.Y)}], [false | Y in set {(cStart.Y), ... ,(cEnd.Y)}], (((cEnd.Y) - (cStart.Y)) + 1))
 else mk_Ship([mk_GLOBAL`Coordinates(X, (cStart.Y)) | X in set {(cStart.X), ... ,(cEnd.X)}], [false | X in set {(cStart.X), ... ,(cEnd.X)}], (((cEnd.X) - (cStart.X)) + 1)))
 	pre ((((cStart.X) = (cEnd.X)) or ((cStart.Y) = (cEnd.Y))) and (((cStart.X) <= (cEnd.X)) and ((cStart.Y) <= (cEnd.Y))))\<close>
-\<comment>\<open>in 'Ship' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Ship.vdmsl) at line 19:1\<close>
+\<comment>\<open>in 'Ship' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Ship.vdmsl) at line 20:1\<close>
 
 \<comment>\<open>VDM source: pre_MakeShip: (Coordinates * Coordinates +> bool)
 	pre_MakeShip(cStart, cEnd) ==
 ((((cStart.X) = (cEnd.X)) or ((cStart.Y) = (cEnd.Y))) and (((cStart.X) <= (cEnd.X)) and ((cStart.Y) <= (cEnd.Y))))\<close>
-\<comment>\<open>in 'Ship' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Ship.vdmsl) at line 29:5\<close>
+\<comment>\<open>in 'Ship' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Ship.vdmsl) at line 30:5\<close>
 definition
 	pre_MakeShip :: "Coordinates \<Rightarrow> Coordinates \<Rightarrow> bool"
 where
@@ -63,7 +63,7 @@ where
 \<comment>\<open>VDM source: post_MakeShip: (Coordinates * Coordinates * Ship +> bool)
 	post_MakeShip(cStart, cEnd, RESULT) ==
 null\<close>
-\<comment>\<open>in 'Ship' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Ship.vdmsl) at line 19:1\<close>
+\<comment>\<open>in 'Ship' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Ship.vdmsl) at line 20:1\<close>
 definition
 	post_MakeShip :: "Coordinates \<Rightarrow> Coordinates \<Rightarrow> Ship \<Rightarrow> bool"
 where
@@ -88,12 +88,12 @@ where
 	HitShip(s, coord) ==
 let i in set (inds (s.Coords)) be st ((s.Coords)(i) = coord) in let postHit:Ship = mk_Ship((s.Coords), (SeqReplaceAt)[bool]((s.Hit), true, i), (s.Length)) in mk_(postHit, mk_GLOBAL`GuessResult(true, ((elems (postHit.Hit)) = {true})))
 	pre ((elems (s.Hit)) <> {true})\<close>
-\<comment>\<open>in 'Ship' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Ship.vdmsl) at line 31:1\<close>
+\<comment>\<open>in 'Ship' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Ship.vdmsl) at line 32:1\<close>
 
 \<comment>\<open>VDM source: pre_HitShip: (Ship * Coordinates +> bool)
 	pre_HitShip(s, coord) ==
 ((elems (s.Hit)) <> {true})\<close>
-\<comment>\<open>in 'Ship' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Ship.vdmsl) at line 38:17\<close>
+\<comment>\<open>in 'Ship' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Ship.vdmsl) at line 39:17\<close>
 definition
 	pre_HitShip :: "Ship \<Rightarrow> Coordinates \<Rightarrow> bool"
 where
@@ -107,7 +107,7 @@ where
 \<comment>\<open>VDM source: post_HitShip: (Ship * Coordinates * (Ship * GuessResult) +> bool)
 	post_HitShip(s, coord, RESULT) ==
 null\<close>
-\<comment>\<open>in 'Ship' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Ship.vdmsl) at line 31:1\<close>
+\<comment>\<open>in 'Ship' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Ship.vdmsl) at line 32:1\<close>
 definition
 	post_HitShip :: "Ship \<Rightarrow> Coordinates \<Rightarrow> (Ship \<times> GuessResult) \<Rightarrow> bool"
 where

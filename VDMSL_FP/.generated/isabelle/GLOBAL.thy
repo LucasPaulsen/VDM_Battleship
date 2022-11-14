@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2022-11-10T14:49:07.748Z
+(* VDM to Isabelle Translation @2022-11-14T10:32:19.085Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in 'c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\GLOBAL.vdmsl' at line 1:8
@@ -383,40 +383,104 @@ where
 
 	
 	
-\<comment>\<open>VDM source: test: (seq of (nat) * nat * nat1 -> seq of (nat))
-	test(s, e, i) ==
-(SeqReplaceAt)[nat](s, e, i)\<close>
+\<comment>\<open>VDM source: SeqNOccurs[T]: (seq of (@T) * @T -> nat)
+	SeqNOccurs(s, e) ==
+(if (s = [])
+then 0
+else (if ((hd s) = e)
+then (1 + (SeqNOccurs)[@T]((tl s), e))
+else (SeqNOccurs)[@T]((tl s), e)))\<close>
 \<comment>\<open>in 'GLOBAL' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\GLOBAL.vdmsl) at line 45:1\<close>
 
-\<comment>\<open>VDM source: pre_test: (seq of (nat) * nat * nat1 +> bool)
-	pre_test(s, e, i) ==
+\<comment>\<open>VDM source: pre_SeqNOccurs[T]: (seq of (@T) * @T +> bool)
+	pre_SeqNOccurs(s, e) ==
 null\<close>
 \<comment>\<open>in 'GLOBAL' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\GLOBAL.vdmsl) at line 45:1\<close>
 definition
-	pre_test :: "VDMNat VDMSeq \<Rightarrow> VDMNat \<Rightarrow> VDMNat1 \<Rightarrow> bool"
+	pre_SeqNOccurs :: "('T \<Rightarrow> bool) \<Rightarrow> 'T VDMSeq \<Rightarrow> 'T \<Rightarrow> bool"
 where
-	"pre_test s   e   i \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_test` specification.\<close>
-		((inv_VDMSeq' (inv_VDMNat) s)  \<and>  (inv_VDMNat e)  \<and>  (inv_VDMNat1 i))"
+	"pre_SeqNOccurs inv_T   s   e \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_SeqNOccurs` specification.\<close>
+		((inv_VDMSeq' inv_T s)  \<and>  inv_T e)"
 
 
-\<comment>\<open>VDM source: post_test: (seq of (nat) * nat * nat1 * seq of (nat) +> bool)
-	post_test(s, e, i, RESULT) ==
+\<comment>\<open>VDM source: post_SeqNOccurs[T]: (seq of (@T) * @T * nat +> bool)
+	post_SeqNOccurs(s, e, RESULT) ==
 null\<close>
 \<comment>\<open>in 'GLOBAL' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\GLOBAL.vdmsl) at line 45:1\<close>
 definition
-	post_test :: "VDMNat VDMSeq \<Rightarrow> VDMNat \<Rightarrow> VDMNat1 \<Rightarrow> VDMNat VDMSeq \<Rightarrow> bool"
+	post_SeqNOccurs :: "('T \<Rightarrow> bool) \<Rightarrow> 'T VDMSeq \<Rightarrow> 'T \<Rightarrow> VDMNat \<Rightarrow> bool"
 where
-	"post_test s   e   i   RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_test` specification.\<close>
-		(pre_test s  e  i \<longrightarrow> ((inv_VDMSeq' (inv_VDMNat) s)  \<and>  (inv_VDMNat e)  \<and>  (inv_VDMNat1 i)  \<and>  (inv_VDMSeq' (inv_VDMNat) RESULT)))"
+	"post_SeqNOccurs inv_T   s   e   RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_SeqNOccurs` specification.\<close>
+		(pre_SeqNOccurs inv_T  s  e \<longrightarrow> ((inv_VDMSeq' inv_T s)  \<and>  inv_T e  \<and>  (inv_VDMNat RESULT)))"
+
+fun
+	SeqNOccurs :: "('T \<Rightarrow> bool) \<Rightarrow> 'T VDMSeq \<Rightarrow> 'T \<Rightarrow> VDMNat"
+where
+	"SeqNOccurs inv_T   s   e = 
+	\<comment>\<open>User defined body of SeqNOccurs.\<close>
+	\<comment>\<open>Implicit check on generic type invariant for `SeqNOccurs`.\<close>
+	(if post_SeqNOccurs inv_T   s   e ((
+		if ((s = [])) then
+		((0::VDMNat))
+		else
+		((
+		if (((hd s) = e)) then
+		(((1::VDMNat1) + (SeqNOccurs inv_T  (tl s)  e)))
+		else
+		((SeqNOccurs inv_T  (tl s)  e)))))) then
+			(
+		if ((s = [])) then
+		((0::VDMNat))
+		else
+		((
+		if (((hd s) = e)) then
+		(((1::VDMNat1) + (SeqNOccurs inv_T  (tl s)  e)))
+		else
+		((SeqNOccurs inv_T  (tl s)  e)))))
+		 else
+			undefined
+		)
+		"
+
+	
+	
+\<comment>\<open>VDM source: SimilarSeqs[T]: (seq of (@T) * seq of (@T) -> bool)
+	SimilarSeqs(s1, s2) ==
+(((len s1) = (len s2)) and (forall e in set (elems s1) & ((SeqNOccurs)[@T](s1, e) = (SeqNOccurs)[@T](s2, e))))\<close>
+\<comment>\<open>in 'GLOBAL' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\GLOBAL.vdmsl) at line 50:1\<close>
+
+\<comment>\<open>VDM source: pre_SimilarSeqs[T]: (seq of (@T) * seq of (@T) +> bool)
+	pre_SimilarSeqs(s1, s2) ==
+null\<close>
+\<comment>\<open>in 'GLOBAL' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\GLOBAL.vdmsl) at line 50:1\<close>
+definition
+	pre_SimilarSeqs :: "('T \<Rightarrow> bool) \<Rightarrow> 'T VDMSeq \<Rightarrow> 'T VDMSeq \<Rightarrow> bool"
+where
+	"pre_SimilarSeqs inv_T   s1   s2 \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_SimilarSeqs` specification.\<close>
+		((inv_VDMSeq' inv_T s1)  \<and>  (inv_VDMSeq' inv_T s2))"
+
+
+\<comment>\<open>VDM source: post_SimilarSeqs[T]: (seq of (@T) * seq of (@T) * bool +> bool)
+	post_SimilarSeqs(s1, s2, RESULT) ==
+null\<close>
+\<comment>\<open>in 'GLOBAL' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\GLOBAL.vdmsl) at line 50:1\<close>
+definition
+	post_SimilarSeqs :: "('T \<Rightarrow> bool) \<Rightarrow> 'T VDMSeq \<Rightarrow> 'T VDMSeq \<Rightarrow> bool \<Rightarrow> bool"
+where
+	"post_SimilarSeqs inv_T   s1   s2   RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_SimilarSeqs` specification.\<close>
+		(pre_SimilarSeqs inv_T  s1  s2 \<longrightarrow> ((inv_VDMSeq' inv_T s1)  \<and>  (inv_VDMSeq' inv_T s2)  \<and>  (inv_bool RESULT)))"
 
 definition
-	test :: "VDMNat VDMSeq \<Rightarrow> VDMNat \<Rightarrow> VDMNat1 \<Rightarrow> VDMNat VDMSeq"
+	SimilarSeqs :: "('T \<Rightarrow> bool) \<Rightarrow> 'T VDMSeq \<Rightarrow> 'T VDMSeq \<Rightarrow> bool"
 where
-	"test s   e   i \<equiv> 
-	\<comment>\<open>User defined body of test.\<close>
-	(SeqReplaceAt (inv_VDMNat)  s  e  i)"
+	"SimilarSeqs inv_T   s1   s2 \<equiv> 
+	\<comment>\<open>User defined body of SimilarSeqs.\<close>
+	\<comment>\<open>Implicit check on generic type invariant for `SimilarSeqs`.\<close>
+	(if post_SimilarSeqs inv_T   s1   s2 ((((len s1) = (len s2)) \<and> (\<forall> e \<in> (elems s1)  . ((SeqNOccurs inv_T  s1  e) = (SeqNOccurs inv_T  s2  e))))) then	(((len s1) = (len s2)) \<and> (\<forall> e \<in> (elems s1)  . ((SeqNOccurs inv_T  s1  e) = (SeqNOccurs inv_T  s2  e)))) else	undefined)"
 
 
 

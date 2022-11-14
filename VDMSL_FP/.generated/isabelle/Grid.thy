@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2022-11-10T14:49:07.757Z
+(* VDM to Isabelle Translation @2022-11-14T10:32:19.097Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in 'c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Grid.vdmsl' at line 1:8
@@ -10,14 +10,14 @@ begin
 
 
 \<comment>\<open>VDM source: ShipT = Ship\<close>
-\<comment>\<open>in 'Grid' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Grid.vdmsl) at line 12:1\<close>
+\<comment>\<open>in 'Grid' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Grid.vdmsl) at line 9:1\<close>
 type_synonym ShipT = "Ship"
 	
 
 \<comment>\<open>VDM source: inv_ShipT: (ShipT +> bool)
 	inv_ShipT(dummy0) ==
 null\<close>
-\<comment>\<open>in 'Grid' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Grid.vdmsl) at line 12:1\<close>
+\<comment>\<open>in 'Grid' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Grid.vdmsl) at line 9:1\<close>
 definition
 	inv_ShipT :: "ShipT \<Rightarrow> bool"
 where
@@ -30,21 +30,24 @@ lemmas inv_ShipT_defs = inv_Coordinates_def inv_Ship_def inv_ShipT_def inv_VDMNa
 
 	
 	
-\<comment>\<open>VDM source: Grid = seq of (ShipT)\<close>
-\<comment>\<open>in 'Grid' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Grid.vdmsl) at line 14:1\<close>
+\<comment>\<open>VDM source: Grid = seq of (ShipT)
+	inv g == (((len g) <= N_SHIPS) and (forall s1, s2 in set (elems g) & ((s1 <> s2) => (((elems (s1.Coords)) inter (elems (s2.Coords))) = {}))))\<close>
+\<comment>\<open>in 'Grid' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Grid.vdmsl) at line 11:1\<close>
 type_synonym Grid = "ShipT VDMSeq"
 	
 
-\<comment>\<open>VDM source: inv_Grid: (Grid +> bool)
-	inv_Grid(dummy0) ==
-null\<close>
-\<comment>\<open>in 'Grid' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Grid.vdmsl) at line 14:1\<close>
+\<comment>\<open>VDM source: inv_Grid: (seq of (ShipT) +> bool)
+	inv_Grid(g) ==
+(((len g) <= N_SHIPS) and (forall s1, s2 in set (elems g) & ((s1 <> s2) => (((elems (s1.Coords)) inter (elems (s2.Coords))) = {}))))\<close>
+\<comment>\<open>in 'Grid' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Grid.vdmsl) at line 12:34\<close>
 definition
 	inv_Grid :: "Grid \<Rightarrow> bool"
 where
-	"inv_Grid dummy0 \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared `inv_Grid` specification.\<close>
-		(((inv_VDMSeq' inv_Ship dummy0)))"
+	"inv_Grid g \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for  `inv_Grid` specification.\<close>
+		(((inv_VDMSeq' inv_Ship g)))  \<and> 
+		\<comment>\<open>User defined body of inv_Grid.\<close>
+		(((len g) \<le> GLOBAL.N_SHIPS) \<and> (\<forall> s1 \<in> (elems g)  . (\<forall> s2 \<in> (elems g)  . ((s1 \<noteq> s2) \<longrightarrow> (((elems (Coords\<^sub>S\<^sub>h\<^sub>i\<^sub>p s1)) \<inter> (elems (Coords\<^sub>S\<^sub>h\<^sub>i\<^sub>p s2))) = {})))))"
  
 lemmas inv_Grid_defs = inv_Coordinates_def inv_Grid_def inv_Ship_def inv_ShipT_def inv_VDMNat_def inv_VDMSeq'_def inv_VDMSeq'_defs inv_VDMSeq1'_def inv_VDMSeq1'_defs inv_bool_def 
 
@@ -54,12 +57,12 @@ lemmas inv_Grid_defs = inv_Coordinates_def inv_Grid_def inv_Ship_def inv_ShipT_d
 \<comment>\<open>VDM source: PlaceableShip: (Grid * ShipT -> bool)
 	PlaceableShip(g, s) ==
 (((elems (s.Coords)) subset ALL_COORDINATES) and (forall ships in set (elems g) & (((elems (s.Coords)) inter (elems (ships.Coords))) = {})))\<close>
-\<comment>\<open>in 'Grid' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Grid.vdmsl) at line 19:1\<close>
+\<comment>\<open>in 'Grid' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Grid.vdmsl) at line 17:1\<close>
 
 \<comment>\<open>VDM source: pre_PlaceableShip: (Grid * ShipT +> bool)
 	pre_PlaceableShip(g, s) ==
 null\<close>
-\<comment>\<open>in 'Grid' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Grid.vdmsl) at line 19:1\<close>
+\<comment>\<open>in 'Grid' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Grid.vdmsl) at line 17:1\<close>
 definition
 	pre_PlaceableShip :: "Grid \<Rightarrow> ShipT \<Rightarrow> bool"
 where
@@ -71,7 +74,7 @@ where
 \<comment>\<open>VDM source: post_PlaceableShip: (Grid * ShipT * bool +> bool)
 	post_PlaceableShip(g, s, RESULT) ==
 null\<close>
-\<comment>\<open>in 'Grid' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Grid.vdmsl) at line 19:1\<close>
+\<comment>\<open>in 'Grid' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Grid.vdmsl) at line 17:1\<close>
 definition
 	post_PlaceableShip :: "Grid \<Rightarrow> ShipT \<Rightarrow> bool \<Rightarrow> bool"
 where
@@ -93,12 +96,12 @@ where
 (g ^ [s])
 	pre PlaceableShip(g, s)
 	post ((len RESULT) > (len g))\<close>
-\<comment>\<open>in 'Grid' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Grid.vdmsl) at line 23:1\<close>
+\<comment>\<open>in 'Grid' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Grid.vdmsl) at line 21:1\<close>
 
 \<comment>\<open>VDM source: pre_PlaceShip: (Grid * ShipT +> bool)
 	pre_PlaceShip(g, s) ==
 PlaceableShip(g, s)\<close>
-\<comment>\<open>in 'Grid' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Grid.vdmsl) at line 25:5\<close>
+\<comment>\<open>in 'Grid' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Grid.vdmsl) at line 23:5\<close>
 definition
 	pre_PlaceShip :: "Grid \<Rightarrow> ShipT \<Rightarrow> bool"
 where
@@ -112,7 +115,7 @@ where
 \<comment>\<open>VDM source: post_PlaceShip: (Grid * ShipT * Grid +> bool)
 	post_PlaceShip(g, s, RESULT) ==
 ((len RESULT) > (len g))\<close>
-\<comment>\<open>in 'Grid' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Grid.vdmsl) at line 26:17\<close>
+\<comment>\<open>in 'Grid' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Grid.vdmsl) at line 24:17\<close>
 definition
 	post_PlaceShip :: "Grid \<Rightarrow> ShipT \<Rightarrow> Grid \<Rightarrow> bool"
 where
@@ -136,12 +139,12 @@ where
 (if (exists [s in set (elems g)] & (c in set (elems (s.Coords))))
 then let i in set (inds g) be st (c in set (elems ((SeqGet)[ShipT](g, i).Coords))) in let hs:(Ship * GuessResult) = HitShip((SeqGet)[ShipT](g, i), c) in mk_((SeqReplaceAt)[ShipT](g, (hs.#1), i), (hs.#2))
 else mk_(g, mk_GLOBAL`GuessResult(false, false)))\<close>
-\<comment>\<open>in 'Grid' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Grid.vdmsl) at line 28:1\<close>
+\<comment>\<open>in 'Grid' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Grid.vdmsl) at line 26:1\<close>
 
 \<comment>\<open>VDM source: pre_Hit: (Grid * Coordinates +> bool)
 	pre_Hit(g, c) ==
 null\<close>
-\<comment>\<open>in 'Grid' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Grid.vdmsl) at line 28:1\<close>
+\<comment>\<open>in 'Grid' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Grid.vdmsl) at line 26:1\<close>
 definition
 	pre_Hit :: "Grid \<Rightarrow> Coordinates \<Rightarrow> bool"
 where
@@ -153,7 +156,7 @@ where
 \<comment>\<open>VDM source: post_Hit: (Grid * Coordinates * (Grid * GuessResult) +> bool)
 	post_Hit(g, c, RESULT) ==
 null\<close>
-\<comment>\<open>in 'Grid' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Grid.vdmsl) at line 28:1\<close>
+\<comment>\<open>in 'Grid' (c:\Users\Lenovo\OneDrive - Aarhus Universitet\Speciale\Battleship\DEV\Grid.vdmsl) at line 26:1\<close>
 definition
 	post_Hit :: "Grid \<Rightarrow> Coordinates \<Rightarrow> (Grid \<times> GuessResult) \<Rightarrow> bool"
 where
