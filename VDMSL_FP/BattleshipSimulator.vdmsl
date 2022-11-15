@@ -1,7 +1,5 @@
 module BattleshipSimulator
 imports from GLOBAL all,
-        from ArrangingStrategy all,
-        from GuessingStrategy all,
         from Player all,
         from GameController all
 exports all
